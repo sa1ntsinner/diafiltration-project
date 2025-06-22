@@ -50,8 +50,10 @@ python scripts/run_nominal.py
 
 ---
 
+
 ## 📂 Project layout
 
+```text
 src/diafiltration/        core library (import diafiltration as df)
 │   constants.py          physical data & specs
 │   model.py              flux functions, ODE RHS, RK4 helpers
