@@ -1,0 +1,11 @@
+# venv
+.venv/
+# python cache
+__pycache__/
+*.pyc
+# notebooks cache
+.ipynb_checkpoints/
+# figures
+figs/
+# OS
+.DS_Store
