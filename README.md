@@ -87,20 +87,20 @@ rebuild LaTeX report	make report
 ---
 
 ## 🧪 Continuous integration
-```text
+
 ci.yml installs the package in editable mode (pip install -e .[dev])
 and runs PyTest on Python 3.11.
 Green badge = reproducible; red badge = something broke.
-```
+
 
 ---
 
 ## 📜 Citing / authors
-```text
+```latex
 @misc{DiafiltrationMPC2025,
-  author       = {Your Name},
+  author       = {Elmir Mirzayev},
   title        = {Batch Diafiltration -- Time-Optimal MPC},
-  howpublished = {\url{https://github.com/<your-username>/diafiltration-project}},
+  howpublished = {\url{https://github.com/sa1ntsinner/diafiltration-project}},
   year         = {2025}
 }
 ```
