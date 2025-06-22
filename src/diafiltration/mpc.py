@@ -34,7 +34,9 @@ def build_mpc(N: int = 20):
            "x":ca.vertcat(ca.reshape(X,-1,1), ca.reshape(U,-1,1)),
            "p":X0,
            "g":ca.vertcat(*g)}
-    opts = {"ipopt.print_level":0, "print_time":0}
+    opts = {"ipopt.print_level": 0,
+        "print_time": 0,
+        "ipopt.sb": "yes"}   # ← ignores CasADi warning logs
     solver = ca.nlpsol("solver","ipopt",nlp,opts)
 
     nX = (N+1)*2
