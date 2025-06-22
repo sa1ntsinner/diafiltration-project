@@ -96,7 +96,7 @@ Green badge = reproducible; red badge = something broke.
 ---
 
 ## 📜 Citing / authors
-```latex
+```bibtex
 @misc{DiafiltrationMPC2025,
   author       = {Elmir Mirzayev},
   title        = {Batch Diafiltration -- Time-Optimal MPC},
