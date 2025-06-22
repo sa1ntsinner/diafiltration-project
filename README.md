@@ -1,7 +1,7 @@
 # Diafiltration – Time-Optimal MPC  
-*(Advanced Process Control, 2025 coursework)*  
+*(Advanced Process Control, SoSe2025)*  
 
-[![CI](https://github.com/<your-username>/diafiltration-project/actions/workflows/ci.yml/badge.svg)](https://github.com/sa1ntsinner/diafiltration-project/actions) 
+[![CI](https://github.com/sa1ntsinner/diafiltration-project/actions/workflows/ci.yml/badge.svg)](https://github.com/sa1ntsinner/diafiltration-project/actions) 
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue?logo=python)](https://www.python.org/)
 
 This repository delivers a **non-linear batch diafiltration model** and a  
@@ -26,10 +26,11 @@ Extra modules analyse robustness to
 
 ---
 
+
 ## 🚀 Quick start
 
 ```bash
-git clone https://github.com/<your-username>/diafiltration-project.git
+git clone https://github.com/sa1ntsinner/diafiltration-project.git
 cd diafiltration-project
 
 # create and activate virtual env
@@ -47,6 +48,7 @@ pytest -q      # should print: ..
 
 # 2. nominal closed-loop run (creates figs/nominal.png)
 python scripts/run_nominal.py
+```
 
 ---
 
@@ -68,27 +70,42 @@ reports/                   # report.pdf, slides.pdf
 .github/workflows/ci.yml   # GitHub Actions (pytest on push)
 Makefile                   # make venv / make test / make figs
 pyproject.toml             # PEP-621 metadata (editable install)
+```
 
+---
 
-🔧 Typical workflows
+## 🔧 Typical workflows
+```text
 What you do	Command
 regenerate main figure	python scripts/run_nominal.py
 run param-mismatch study	python scripts/run_disturbances.py
 test another horizon N	python -m diafiltration -N 40
 run all tests	pytest -q
 rebuild LaTeX report	make report
+```
 
-🧪 Continuous integration
+---
+
+## 🧪 Continuous integration
+```text
 ci.yml installs the package in editable mode (pip install -e .[dev])
 and runs PyTest on Python 3.11.
 Green badge = reproducible; red badge = something broke.
+```
 
-📜 Citing / authors
+---
+
+## 📜 Citing / authors
+```text
 @misc{DiafiltrationMPC2025,
   author       = {Your Name},
   title        = {Batch Diafiltration -- Time-Optimal MPC},
   howpublished = {\url{https://github.com/<your-username>/diafiltration-project}},
   year         = {2025}
 }
+```
 
+---
+
+## © Licence
 Project for Advanced Process Control 2025, TU Dortmund
