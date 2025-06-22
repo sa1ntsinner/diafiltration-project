@@ -87,11 +87,11 @@ rebuild LaTeX report	make report
 ---
 
 ## 🧪 Continuous integration
-
+```text
 ci.yml installs the package in editable mode (pip install -e .[dev])
 and runs PyTest on Python 3.11.
 Green badge = reproducible; red badge = something broke.
-
+```
 
 ---
 
