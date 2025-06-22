@@ -1,6 +1,6 @@
 import numpy as np, casadi as ca
 from .constants import *
-from .model      import casadi_rhs
+from .model import casadi_rhs
 
 def _rk4_disc(f, dt):
     x = ca.SX.sym("x",2); u = ca.SX.sym("u")
