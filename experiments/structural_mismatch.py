@@ -1,11 +1,11 @@
 """
 Structural mismatch: protein leakage scenario (additional task 2) :contentReference[oaicite:7]{index=7}.
 """
-from src import ProcessParameters, simulate
-from src.robustness import plant_structural_mismatch
-from src.mpc_controller import MPCController
-from src.model import DiafiltrationModel
-from src.plotting import plot_trajectories, finalize_plots
+from diafiltration_mpc import ProcessParameters, simulate
+from diafiltration_mpc.robustness import plant_structural_mismatch
+from diafiltration_mpc.mpc_controller import MPCController
+from diafiltration_mpc.model import DiafiltrationModel
+from diafiltration_mpc.plotting import plot_trajectories, finalize_plots
 
 p     = ProcessParameters()
 plant = plant_structural_mismatch(p)

@@ -1,4 +1,4 @@
-from src import ProcessParameters, DiafiltrationModel, MPCController
+from diafiltration_mpc import ProcessParameters, DiafiltrationModel, MPCController
 
 def test_mpc_returns_feasible_u():
     p = ProcessParameters()

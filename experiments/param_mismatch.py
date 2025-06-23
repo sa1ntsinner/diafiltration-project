@@ -2,9 +2,9 @@
 Parametric plant-model mismatch study (additional task 1) :contentReference[oaicite:6]{index=6}.
 """
 import numpy as np
-from src import ProcessParameters, DiafiltrationModel, MPCController, simulate
-from src.robustness import plant_param_mismatch, tightened_mpc
-from src.plotting import plot_trajectories, finalize_plots
+from diafiltration_mpc import ProcessParameters, DiafiltrationModel, MPCController, simulate
+from diafiltration_mpc.robustness import plant_param_mismatch, tightened_mpc
+from diafiltration_mpc.plotting import plot_trajectories, finalize_plots
 
 p_nom  = ProcessParameters()
 designer_model = DiafiltrationModel(p_nom)

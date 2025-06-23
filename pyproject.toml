@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diafiltration-mpc"
+version = "0.1.0"
+description = "Non-linear diafiltration model + time-optimal MPC (APC SS25)"
+authors = [{name = "Elmir Mirzayev"}]
+license = {text = "BSD-3-Clause"}   # или другой, который ты выбрал
+readme = "README.md"
+requires-python = ">=3.9,<3.10"
+
+[tool.setuptools]
+packages = ["diafiltration_mpc"]
+package-dir = {"" = "."}
+
+
+[project.optional-dependencies]
+dev = ["pytest"]

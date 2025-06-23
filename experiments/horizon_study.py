@@ -3,8 +3,8 @@ Influence of prediction horizon N ∈ {5, 20, 50} on tracking MPC
 (mandatory task 3) :contentReference[oaicite:5]{index=5}.
 """
 import numpy as np
-from src import ProcessParameters, DiafiltrationModel, MPCController, simulate
-from src.plotting import plot_trajectories, finalize_plots
+from diafiltration_mpc import ProcessParameters, DiafiltrationModel, MPCController, simulate
+from diafiltration_mpc.plotting import plot_trajectories, finalize_plots
 
 p      = ProcessParameters()
 plant  = DiafiltrationModel(p)

@@ -1,4 +1,4 @@
-from src import ProcessParameters, DiafiltrationModel
+from diafiltration_mpc import ProcessParameters, DiafiltrationModel
 
 def test_mass_invariant():
     """Protein mass must stay constant in the nominal model."""
