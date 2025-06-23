@@ -1,16 +1,11 @@
 name: diafiltration_mpc_SS25
 channels:
   - conda-forge
-  - defaults
 dependencies:
-  # базовое окружение курса (из PAS_environment_SS25.yml) :contentReference[oaicite:2]{index=2}
-  - python==3.9
-  - jupyter
-  - notebook
-  - jupytergraffiti
-  # требуемые библиотеки проекта
+  - python=3.9
   - numpy
   - matplotlib
-  - casadi=3.6.*
-  # тесты и утилиты
+  - casadi=3.6.*        # есть сборки и под Linux
   - pytest
+  # Dev-утилиты (pip-route, не ломают solver)
+  - pip
