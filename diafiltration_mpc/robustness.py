@@ -10,9 +10,9 @@ k_M,L under-estimation, real c_L never violates the true 570 mol m-3 limit.
 from __future__ import annotations
 import numpy as np
 import casadi as ca
-from parameters import ProcessParameters
-from model import DiafiltrationModel
-from mpc_controller import MPCController
+from .parameters import ProcessParameters
+from .model import DiafiltrationModel
+from .mpc_controller import MPCController
 
 # -------------------------------------------------------------------------
 def plant_param_mismatch(p: ProcessParameters, factor: float) -> DiafiltrationModel:

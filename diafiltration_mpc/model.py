@@ -22,7 +22,7 @@ u = d/p ∈ [0, 1] – отношение расхода добавляемог�
 from __future__ import annotations
 import numpy as np
 import casadi as ca
-from parameters import ProcessParameters
+from .parameters import ProcessParameters
 
 class DiafiltrationModel:
     def __init__(self, p: ProcessParameters, tear: bool = False):

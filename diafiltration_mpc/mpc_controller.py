@@ -14,8 +14,8 @@ NB: ограничение c_L ≤ 570 всегда «жёсткое», терм
 """
 import casadi as ca
 import numpy as np
-from parameters import ProcessParameters
-from model import DiafiltrationModel
+from .parameters import ProcessParameters
+from .model import DiafiltrationModel
 
 class MPCController:
     def __init__(self,

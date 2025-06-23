@@ -5,7 +5,7 @@ plotting.py
 """
 import matplotlib.pyplot as plt
 import numpy as np
-from parameters import ProcessParameters
+from .parameters import ProcessParameters
 
 def plot_trajectories(res_dict: dict, label: str, p: ProcessParameters,
                       style: str = '-') -> None:

@@ -7,8 +7,8 @@ simulation.py
 from __future__ import annotations
 import numpy as np
 from typing import Callable, Dict, List
-from model import DiafiltrationModel
-from parameters import ProcessParameters
+from .model import DiafiltrationModel
+from .parameters import ProcessParameters
 
 def simulate(model       : DiafiltrationModel,
              controller  : Callable[[np.ndarray], float],
