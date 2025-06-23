@@ -92,6 +92,16 @@ diafiltration-mpc/
 
 ---
 
+### 🧪 Continuous integration
+```text
+The GitHub Actions workflow **`ci.yml`** recreates _exactly the same_
+conda environment we ship for local work (`environment.yml`, Python 3.9),
+installs the project in editable mode and runs the full PyTest suite.  
+A green badge means the commit is 100 % reproducible on a clean runner.
+```
+
+---
+
 ## 📜 Citing / authors
 ```bibtex
 @misc{DiafiltrationMPC2025,
