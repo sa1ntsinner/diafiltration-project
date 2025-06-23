@@ -16,6 +16,8 @@ import casadi as ca
 import numpy as np
 from .parameters import ProcessParameters
 from .model import DiafiltrationModel
+from typing import Union, Sequence
+
 
 class MPCController:
     def __init__(self,
@@ -94,7 +96,7 @@ class MPCController:
 
     # ---------------------------------------------------------------------
 
-    def control(self, x_now: np.ndarray | list) -> float:   # тип допускает list
+    def control(self, x_now: Union[np.ndarray, Sequence[float]]) -> float:
         """
         Решаем NLP и возвращаем первый оптимальный шаг управления u₀.
         """
