@@ -3,10 +3,17 @@ from .constants import *
 
 # ---------- NumPy (plant) ------------------------------------------------
 def flux_permeate(cP: float) -> float:
-    return k * A * np.log(cg / cP)
+    # Permeate flux (m³ s⁻¹).  Guard against log(≤0).
+    ratio = max(cg / cP, 1e-9)           # always > 0
+    return k * A * np.log(ratio)
 
 def lactose_permeate_conc(cL: float, p: float) -> float:
-    exp_term = np.exp(p / (kM_L * A))
+    """
+    Lactose concentration on permeate side (mol m⁻³).
+    Clip exponent argument to avoid overflow: exp(±50) ≈ 5e21 ↔ 2e-22
+    """
+    arg = np.clip(p / (kM_L * A), -50.0, 50.0)
+    exp_term = np.exp(arg)
     return alpha * cL / (1 + (alpha - 1) * exp_term)
 
 def rhs(state: np.ndarray, u: float) -> np.ndarray:
@@ -30,9 +37,10 @@ def rk4_step(state, u, dt=dt_ctrl):
 def casadi_rhs():
     V, ML, u = ca.SX.sym("V"), ca.SX.sym("ML"), ca.SX.sym("u")
     cP  = MP / V
-    p   = k * A * ca.log(cg / cP)
+    ratio = ca.fmax(cg / cP, 1e-9)
+    p   = k * A * ca.log(ratio)
     d   = u * p
     cL  = ML / V
-    cL_p = alpha*cL / (1+(alpha-1)*ca.exp(p/(kM_L*A)))
-    return ca.Function("f", [ca.vertcat(V,ML), u],
-                       [ca.vertcat(d-p, -cL_p*p)])
+    arg   = ca.fmin(ca.fmax(p/(kM_L*A), -50.0), 50.0)
+    cL_p = alpha*cL / (1 + (alpha-1)*ca.exp(arg))
+    return ca.Function("f", [ca.vertcat(V,ML), u], [ca.vertcat(d-p, -cL_p*p)])
