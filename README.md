@@ -1,9 +1,10 @@
 # Diafiltration — Time-Optimal MPC  
 <sub><em>Advanced Process Control, SoSe 2025 • TU Dortmund</em></sub>
 
-[![CI](https://github.com/sa1ntsinner/diafiltration-mpc/actions/workflows/ci.yml/badge.svg)](https://github.com/sa1ntsinner/diafiltration-mpc/actions) 
-[![Python](https://img.shields.io/badge/python-3.9%20‖%203.10%20‖%203.11-blue?logo=python)](https://www.python.org/)  
-[![Licence](https://img.shields.io/badge/license-MIT-green)](#-licence)
+[![CI status](https://github.com/sa1ntsinner/diafiltration-project/actions/workflows/ci.yml/badge.svg)](https://github.com/sa1ntsinner/diafiltration-project/actions) 
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue?logo=python)](https://www.python.org/) 
+[![Licence BSD-3 (TU Dortmund)](https://img.shields.io/badge/license-BSD--3--Clause-green)](#-licence)
+
 
 <div align="center">
 
