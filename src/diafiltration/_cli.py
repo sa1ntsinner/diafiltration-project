@@ -1,20 +1,29 @@
-import argparse, matplotlib.pyplot as plt
+"""
+$ python -m diafiltration [-N 30]
+Creates figs/nominal.png using closed_loop().
+"""
+import argparse, pathlib, matplotlib.pyplot as plt
 from .simulator  import closed_loop
-from .constants  import MP, cP_star, cL_star
+from .constants  import MP
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("-N", type=int, default=20, help="MPC horizon")
-    ns = ap.parse_args()
+    ap.add_argument("-N", type=int, default=20, help="prediction horizon")
+    args = ap.parse_args()
 
-    t,V,ML,u = closed_loop(N=ns.N)
-    cP = MP / V; cL = ML / V
+    t, V, ML, u = closed_loop(N=args.N)
+    cP, cL = MP/V, ML/V
 
-    plt.figure(figsize=(6,5))
-    ax1=plt.subplot(311); ax1.plot(t/3600,cP); ax1.axhline(cP_star,ls="--"); ax1.set_ylabel("c_P")
-    ax2=plt.subplot(312); ax2.plot(t/3600,cL); ax2.axhline(cL_star,ls="--"); ax2.set_ylabel("c_L")
-    ax3=plt.subplot(313); ax3.step(t[:-1]/3600,u,where="post"); ax3.set_ylabel("u"); ax3.set_xlabel("h")
-    plt.tight_layout(); plt.show()
+    out = pathlib.Path("figs"); out.mkdir(exist_ok=True)
+    fn  = out / "nominal.png"
+
+    fig, ax = plt.subplots(3,1,figsize=(6,10),sharex=True)
+    ax[0].plot(t/3600, cP); ax[0].set_ylabel("c_P [mol/m³]")
+    ax[1].plot(t/3600, cL); ax[1].set_ylabel("c_L [mol/m³]")
+    ax[2].step(t[:-1]/3600, u, where="post"); ax[2].set_ylabel("u")
+    ax[2].set_xlabel("time [h]")
+    fig.tight_layout(); fig.savefig(fn, dpi=150)
+    print("saved", fn)
 
 if __name__ == "__main__":
     main()
