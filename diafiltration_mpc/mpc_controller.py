@@ -94,41 +94,37 @@ class MPCController:
 
     # ---------------------------------------------------------------------
 
-    def control(self, x_now: np.ndarray) -> float:
+    def control(self, x_now: np.ndarray | list) -> float:   # тип допускает list
         """
-        Решаем NLP и выдаём первый элемент оптимальной траектории u₀.
-
-        Parameters
-        ----------
-        x_now : np.ndarray, shape (2,)
-            Текущее измеренное состояние [V, c_L].
-
-        Returns
-        -------
-        float
-            Управляющее воздействие u ∈ [0, 1].
+        Решаем NLP и возвращаем первый оптимальный шаг управления u₀.
         """
+        # --- гарантируем NumPy-массив ---------------------------------------
+        x_now = np.asarray(x_now, dtype=float)
+
         # обновляем параметр "текущее состояние"
         self._opti.set_value(self._x0, x_now)
 
-        # --------------------- initial guess / warm-start --------------------
-        if hasattr(self, "_last_sol"):                    # тёплый старт
+        # --------------------- initial guess / warm-start -------------------
+        if hasattr(self, "_last_sol"):
+            # тёплый старт предыдущим решением
             self._opti.set_initial(self._X_var, self._last_sol.value(self._X_var))
             self._opti.set_initial(self._U_var, self._last_sol.value(self._U_var))
-        else:                                             # самый первый вызов
-            self._opti.set_initial(self._X_var,
-                                np.tile(x_now.reshape(-1, 1), (1, self.N + 1)))
+        else:
+            # первый вызов: «замораживаем» состояние, u = 0.5
+            self._opti.set_initial(
+                self._X_var,
+                np.tile(x_now.reshape(-1, 1), (1, self.N + 1))
+            )
             self._opti.set_initial(self._U_var, 0.5)
 
         # ----------------------------- решаем NLP ---------------------------
         try:
             sol = self._opti.solve()
-            self._last_sol = sol                          # сохраняем для warm-start
+            self._last_sol = sol
             u0 = sol.value(self._U_var[0, 0])
-        except RuntimeError:                              # Ipopt не сошёлся
+        except RuntimeError:              # если оптимизатор не сошёлся
             u0 = (float(self._last_sol.value(self._U_var[0, 0]))
                 if hasattr(self, "_last_sol") else 0.5)
 
-        # гарантия числовых границ
         return float(np.clip(u0, 0.0, 1.0))
 
