@@ -1,39 +1,47 @@
-"""
-Optional robustness helpers:
-  • run_mismatch()  – parametric kM,L,true < kM,L
-  • apply_leakage() – structural mismatch (protein leakage)
-"""
 import numpy as np
-from .constants import *
-from .model     import rk4_step, flux_permeate, lactose_permeate_conc
+from .constants  import *
+from .model      import flux_permeate, lactose_permeate_conc
+from .mpc        import build_mpc
+from .simulator  import rk4_step          # reuse NumPy RK4
 
-# ----------------------------------------------------------------------
-def run_mismatch(factor: float, u=1.0, hrs_limit=24):
-    """Open-loop batch with kM_L,true = factor · kM_L."""
-    kM_L_true = factor * kM_L
-    state = np.array([V0, ML0]); t = 0
-    while t < hrs_limit*3600:
-        V, ML = state
-        cP, p = MP/V, flux_permeate(MP/V)
-        arg = np.clip(p/(kM_L_true*A), -50, 50)
-        cL_p = alpha*(ML/V)/(1+(alpha-1)*np.exp(arg))
-        rhs = np.array([u*p - p, -cL_p*p])
-        state += dt_ctrl*rhs
-        t += dt_ctrl
-        if MP/state[0] >= cP_star and (state[1]/state[0]) <= cL_star:
-            return t/3600
-    return np.inf
+# ---------- param-mismatch lactose kM_L ---------------------------------
+def rhs_km_mismatch(state: np.ndarray, u: float, factor: float) -> np.ndarray:
+    V, ML = state
+    cP = MP / V
+    p  = flux_permeate(cP)
+    d  = u * p
+    cL = ML / V
+    exp = np.exp(p / (factor * kM_L * A))
+    cL_p = alpha * cL / (1 + (alpha - 1) * exp)
+    return np.array([d - p, -cL_p * p])
 
-# ----------------------------------------------------------------------
-def apply_leakage(state, u):
-    """One RK4 step with protein leakage (β=1.3, kM,P=1e-6)."""
-    V, ML = state; cP = MP/V
-    p = flux_permeate(cP); d = u*p; cL = ML/V
-    β, kM_P = 1.3, 1e-6
-    argP = np.clip(p/(kM_P*A), -50, 50)
-    cP_p = β*cP / (1+(β-1)*np.exp(argP))
-    dMP  = cP_p*p                      # lost protein (optional use)
-    argL = np.clip(p/(kM_L*A), -50, 50)
-    cL_p = alpha*cL/(1+(alpha-1)*np.exp(argL))
-    rhs = np.array([d - p, -cL_p*p])
-    return rk4_step(state, u), dMP
+def rk4_mismatch(state, u, factor, dt=dt_ctrl):
+    k1 = rhs_km_mismatch(state, u, factor)
+    k2 = rhs_km_mismatch(state+0.5*dt*k1, u, factor)
+    k3 = rhs_km_mismatch(state+0.5*dt*k2, u, factor)
+    k4 = rhs_km_mismatch(state+dt*k3, u, factor)
+    return state + dt/6*(k1+2*k2+2*k3+k4)
+
+# ---------- structural mismatch – protein leakage -----------------------
+beta      = 1.3
+kM_P_true = 1.0e-6
+
+def rhs_leak(state: np.ndarray, u: float) -> np.ndarray:
+    V, ML, MP_dyn = state
+    cP = MP_dyn / V
+    p  = flux_permeate(cP)
+    d  = u * p
+    cL = ML / V
+    exp_L = np.exp(p / (kM_L * A))
+    cL_p  = alpha * cL / (1 + (alpha - 1) * exp_L)
+    cP_p  = beta  * cP / (1 + (beta  - 1) * np.exp(p/(kM_P_true*A)))
+    return np.array([d - p,
+                     -cL_p * p,
+                     -cP_p * p])
+
+def rk4_leak(state, u, dt=dt_ctrl):
+    k1 = rhs_leak(state, u)
+    k2 = rhs_leak(state+0.5*dt*k1, u)
+    k3 = rhs_leak(state+0.5*dt*k2, u)
+    k4 = rhs_leak(state+dt*k3, u)
+    return state + dt/6*(k1+2*k2+2*k3+k4)
