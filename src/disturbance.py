@@ -1,7 +1,7 @@
 import numpy as np
-from .constants  import *
+from .parameters  import *
 from .model      import flux_permeate, lactose_permeate_conc
-from .mpc        import build_mpc
+from .mpc_controller        import build_mpc
 from .simulator  import rk4_step          # reuse NumPy RK4
 
 # ---------- param-mismatch lactose kM_L ---------------------------------

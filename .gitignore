@@ -1,11 +1,16 @@
-# venv
-.venv/
-# python cache
+# byte-кэш и метаданные
 __pycache__/
-*.pyc
-# notebooks cache
+*.py[cod]
+*.so
+# IDE
+.vscode/
+.idea/
+# окружения
+.env/
+.venv/
+# Jupyter-сессии
 .ipynb_checkpoints/
-# figures
-figs/
-# OS
-.DS_Store
+# артефакты
+*.png
+*.pdf
+results/

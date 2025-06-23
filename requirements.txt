@@ -1,4 +1,0 @@
-casadi>=3.6.2
-numpy
-matplotlib
-pytest
