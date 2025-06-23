@@ -85,17 +85,19 @@ class DiafiltrationModel:
 
     def rk4_step(self, x_k: np.ndarray, u_k: float, dt: float) -> np.ndarray:
         """
-        Одношаговый RK4-интегратор (NumPy).
-        Используется в 'честной' симуляции (plant).
+        Чистый NumPy-RK4 (через CasADi DM ⇒ NumPy); без динамического
+        создания Function – быстрее и надёжнее.
         """
-        f = lambda x, u: ca.Function('f', [ca.MX.sym('x',2), ca.MX.sym('u')], 
-                                     [self.rhs(ca.MX.sym('x',2), ca.MX.sym('u'))])(x, u).full().flatten()
+        x = ca.DM(x_k)                     # → CasADi vector
+        f = self.rhs
 
-        k1 = f(x_k,          u_k)
-        k2 = f(x_k + 0.5*dt*k1, u_k)
-        k3 = f(x_k + 0.5*dt*k2, u_k)
-        k4 = f(x_k +     dt*k3, u_k)
-        return x_k + dt/6.0*(k1 + 2*k2 + 2*k3 + k4)
+        k1 = f(x,               u_k)
+        k2 = f(x + 0.5*dt*k1,   u_k)
+        k3 = f(x + 0.5*dt*k2,   u_k)
+        k4 = f(x + dt*k3,       u_k)
+
+        x_next = x + dt/6 * (k1 + 2*k2 + 2*k3 + k4)
+        return np.array(x_next).astype(float).flatten()
 
     # -------------------- построение CasADi-интегратора -------------------
 

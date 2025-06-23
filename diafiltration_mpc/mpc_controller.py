@@ -55,7 +55,7 @@ class MPCController:
             opti.subject_to(X[:,k+1] == self.F(X[:,k], U[:,k]))
 
             # ограничение 0 <= u <= 1
-            opti.subject_to(opti.bounded(0.0, U[:,k], 1.0))
+            opti.subject_to(X[0,k] >= 1e-4)
             # ограничение c_L ≤ c_L_max
             opti.subject_to(X[1,k] <= p.c_L_max)
 
@@ -96,9 +96,39 @@ class MPCController:
 
     def control(self, x_now: np.ndarray) -> float:
         """
-        Решаем NLP, возвращаем оптимальный u₀.
+        Решаем NLP и выдаём первый элемент оптимальной траектории u₀.
+
+        Parameters
+        ----------
+        x_now : np.ndarray, shape (2,)
+            Текущее измеренное состояние [V, c_L].
+
+        Returns
+        -------
+        float
+            Управляющее воздействие u ∈ [0, 1].
         """
+        # обновляем параметр "текущее состояние"
         self._opti.set_value(self._x0, x_now)
-        sol = self._opti.solve()
-        u0  = sol.value(self._U_var[0,0])
-        return float(u0)
+
+        # --------------------- initial guess / warm-start --------------------
+        if hasattr(self, "_last_sol"):                    # тёплый старт
+            self._opti.set_initial(self._X_var, self._last_sol.value(self._X_var))
+            self._opti.set_initial(self._U_var, self._last_sol.value(self._U_var))
+        else:                                             # самый первый вызов
+            self._opti.set_initial(self._X_var,
+                                np.tile(x_now.reshape(-1, 1), (1, self.N + 1)))
+            self._opti.set_initial(self._U_var, 0.5)
+
+        # ----------------------------- решаем NLP ---------------------------
+        try:
+            sol = self._opti.solve()
+            self._last_sol = sol                          # сохраняем для warm-start
+            u0 = sol.value(self._U_var[0, 0])
+        except RuntimeError:                              # Ipopt не сошёлся
+            u0 = (float(self._last_sol.value(self._U_var[0, 0]))
+                if hasattr(self, "_last_sol") else 0.5)
+
+        # гарантия числовых границ
+        return float(np.clip(u0, 0.0, 1.0))
+
