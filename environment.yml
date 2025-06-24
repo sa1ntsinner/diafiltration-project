@@ -3,9 +3,10 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - numpy
-  - matplotlib
-  - casadi=3.6.*        # есть сборки и под Linux
+  - numpy=1.26
+  - matplotlib=3.8
+  - casadi=3.7.0        # есть сборки и под Linux
   - pytest
-  # Dev-утилиты (pip-route, не ломают solver)
+  - streamlit
+  - pymupdf
   - pip
