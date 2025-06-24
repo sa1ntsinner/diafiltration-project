@@ -10,6 +10,7 @@ def lactose_permeate_conc(cL, p):
 
 def rhs(state, u):
     V, ML = state
+    V = max(V, 1e-6)
     cP = MP / V
     p = flux_permeate(cP)
     d = u * p
@@ -17,9 +18,21 @@ def rhs(state, u):
     cL_p = lactose_permeate_conc(cL, p)
     return np.array([d - p, -cL_p * p])
 
-def rk4_step(state, u, dt):
+def rk4_step(state, u, dt=dt_ctrl):
     k1 = rhs(state, u)
-    k2 = rhs(state + 0.5*dt*k1, u)
-    k3 = rhs(state + 0.5*dt*k2, u)
-    k4 = rhs(state + dt*k3, u)
-    return state + dt/6 * (k1 + 2*k2 + 2*k3 + k4)
+    k2 = rhs(state + 0.5 * dt * k1, u)
+    k3 = rhs(state + 0.5 * dt * k2, u)
+    k4 = rhs(state + dt * k3, u)
+    return state + dt / 6 * (k1 + 2*k2 + 2*k3 + k4)
+
+def simulate_open_loop(u: float, tf=6 * 3600):
+    steps = int(tf / dt_ctrl) + 1
+    t = np.empty(steps); V = np.empty(steps); ML = np.empty(steps)
+    state = np.array([V0, ML0])
+
+    for k in range(steps):
+        t[k] = k * dt_ctrl
+        V[k], ML[k] = state
+        state = rk4_step(state, u)
+
+    return t, V, ML
