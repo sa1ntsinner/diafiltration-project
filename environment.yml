@@ -1,4 +1,4 @@
-name: diafiltration_mpc_SS25
+name: DFP
 channels:
   - conda-forge
 dependencies:

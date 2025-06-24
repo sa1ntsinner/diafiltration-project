@@ -35,7 +35,7 @@ cd diafiltration-mpc
 
 # create & activate conda env
 conda env create -f environment.yml
-conda activate diafiltration_mpc_SS25
+conda activate DFP
 
 # install in editable mode
 python -m pip install -e .
