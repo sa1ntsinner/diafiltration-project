@@ -2,7 +2,6 @@ import numpy as np
 from model import rk4_step
 from constants import V0, ML0, MP, cP_star, cL_star, dt_ctrl
 from mpc import build_mpc
-from model import simulate_open_loop
 from constants import V0, ML0, t_final
 
 def closed_loop(N=20, tf=6*3600):
@@ -24,7 +23,6 @@ def closed_loop(N=20, tf=6*3600):
         state = rk4_step(state, u_now, dt_ctrl)
     return t, V, ML, np.array(u_hist)
 
-
 def simulate_open_loop(u: float, T: int = t_final):
     steps = int(T / dt_ctrl) + 1
     t = np.empty(steps)
@@ -38,4 +36,3 @@ def simulate_open_loop(u: float, T: int = t_final):
         state = rk4_step(state, u, dt_ctrl)
 
     return t, V, ML
-

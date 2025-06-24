@@ -15,4 +15,3 @@ elif page == "MPC":
     show_mpc()
 elif page == "Test":
     show_tests()
-

@@ -24,15 +24,3 @@ def rk4_step(state, u, dt=dt_ctrl):
     k3 = rhs(state + 0.5 * dt * k2, u)
     k4 = rhs(state + dt * k3, u)
     return state + dt / 6 * (k1 + 2*k2 + 2*k3 + k4)
-
-def simulate_open_loop(u: float, tf=6 * 3600):
-    steps = int(tf / dt_ctrl) + 1
-    t = np.empty(steps); V = np.empty(steps); ML = np.empty(steps)
-    state = np.array([V0, ML0])
-
-    for k in range(steps):
-        t[k] = k * dt_ctrl
-        V[k], ML[k] = state
-        state = rk4_step(state, u)
-
-    return t, V, ML
