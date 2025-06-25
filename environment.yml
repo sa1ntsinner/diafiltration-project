@@ -8,5 +8,3 @@ dependencies:
   - casadi=3.7.0
   - pytest
   - streamlit
-  - pymupdf
-  - pip

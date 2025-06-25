@@ -25,7 +25,7 @@ def closed_loop_time_optimal(N=20, tf=6 * 3600):
 
         # Инициализация переменных
         x_init = np.tile(state, meta['N'] + 1)
-        u_init = 0.5 * np.ones(meta['N'])
+        u_init = np.ones(meta['N'])
         var_init = np.hstack([x_init, u_init])
 
         # Решение задачи оптимизации
