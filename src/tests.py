@@ -3,7 +3,6 @@ from constants import *
 from mpc import build_mpc
 from model import rk4_step, flux_permeate, lactose_permeate_conc
 
-
 # ---------- 1. Disturbance Test (step disturbance after 2h) ----------
 def disturbance_test(N=20):
     solver, meta, LBG, UBG = build_mpc(N)
