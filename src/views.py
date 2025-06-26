@@ -12,7 +12,16 @@ from simulator import (
 from simulator_time_optimal import closed_loop_time_optimal
 from tests import disturbance_test, simulate_mismatch, batch_time_mismatch
 
-
+# ───────────────────────── ➊ helper ─────────────────────────
+def batch_time(t, cP, cL, tol=1e-3):
+    """
+    Возвращает время (ч) первой точки, где cP ≥ cP* и cL ≤ cL*.
+    Если спецификации так и не достигнуты, возвращает t[-1] / 3600.
+    """
+    idx = np.where((cP >= cP_star - tol) & (cL <= cL_star + tol))[0]
+    done_idx = idx[0] if idx.size else len(t) - 1
+    return t[done_idx] / 3600
+    
 # ──────────────────────────────────────────────────────────────────────────────
 def show_open_loop():
     st.markdown("## Open-loop Simulation")
@@ -113,48 +122,37 @@ def show_mpc():
     # ─── 3. Time-optimal MPC ────────────────────────────────────────────────
     st.markdown("---")
     st.markdown("### 3. Time-optimal MPC")
-    st.markdown(
-        "This controller explicitly encourages high $u$ values to minimize total "
-        "batch duration while respecting constraints.  The objective function is "
-        "designed to penalize **low $u$**, indirectly pushing the system toward faster completion."
-    )
+    st.markdown("""
+    This controller explicitly encourages high $u$ values to minimize total batch
+    duration while respecting constraints. The objective function is designed
+    to penalize **low $u$**, indirectly pushing the system toward faster completion.
+    """)
 
-    N_opt = st.slider(
-        "Prediction Horizon for Time-Optimal MPC", 5, 50, 20, key="opt_N"
-    )
+    N_opt = st.slider("Prediction Horizon for Time-Optimal MPC",
+                      5, 50, 20, key="opt_N")
+
     t_opt, V_opt, ML_opt, u_opt = closed_loop_time_optimal(N_opt)
     cP_opt = MP / V_opt
     cL_opt = ML_opt / V_opt
-
     plot_charts("Time-optimal MPC", t_opt, cP_opt, cL_opt, u_opt)
 
-    # --- batch-time comparison ---------------------------------------------
-    tol = 1e-3
+    # ─── ➋ честно пересчитываем длительность обеих партий ───
+    t_thr,  V_thr,  ML_thr,  _ = closed_loop_threshold()
+    cP_thr = MP / V_thr
+    cL_thr = ML_thr / V_thr
 
-    idx_opt = np.where(
-        (cP_opt >= cP_star - tol) & (cL_opt <= cL_star + tol)
-    )[0]
-    batch_time_opt = (
-        t_opt[idx_opt[0]] / 3600 if idx_opt.size else t_opt[-1] / 3600
-    )
-
-    idx_thr = np.where(
-        (cP_thr >= cP_star - tol) & (cL_thr <= cL_star + tol)
-    )[0]
-    batch_time_thr = (
-        t_thr[idx_thr[0]] / 3600 if idx_thr.size else t_thr[-1] / 3600
-    )
+    batch_time_opt = batch_time(t_opt, cP_opt, cL_opt)
+    batch_time_thr = batch_time(t_thr, cP_thr, cL_thr)
 
     st.success(
-        "🏁 Batch finished — time-optimal MPC: **{:.2f} h**, "
-        "threshold policy: **{:.2f} h**.".format(batch_time_opt, batch_time_thr)
+        f"🏁 Batch finished — time-optimal MPC: **{batch_time_opt:.2f} h**, "
+        f"threshold policy: **{batch_time_thr:.2f} h**."
     )
 
-    st.markdown(
-        "✅ The time-optimal MPC increases $u$ when it is safe, reducing total purification time.  \n"
-        "⏱️ Try increasing N to see faster convergence (with more aggressive control)."
-    )
-
+    st.markdown("""
+    ✅ The time-optimal MPC increases $u$ when it is safe, reducing total purification time.  
+    ⏱️ Try increasing N to see faster convergence (with more aggressive control).
+    """)
 
 # ──────────────────────────────────────────────────────────────────────────────
 def plot_charts(title, t, cP, cL, u):

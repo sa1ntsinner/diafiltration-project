@@ -31,7 +31,7 @@ def closed_loop_time_optimal(N: int = 20, tf: float = 6 * 3600):
 
         # ---- MPC optimisation -------------------------------------------------
         x_init  = np.tile(state, meta["N"] + 1)
-        u_init  = np.ones(meta["N"])          # start from u = 1
+        u_init = meta["u_init"].copy()
         var_init = np.hstack([x_init, u_init])
 
         sol  = solver(x0=var_init, p=state, lbg=LBG, ubg=UBG)
