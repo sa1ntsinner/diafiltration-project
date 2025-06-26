@@ -30,8 +30,8 @@ Robustness to **disturbance & plant-model mismatch** is built-in.
 ## 🚀 Quickstart
 
 ```bash
-git clone https://github.com/sa1ntsinner/diafiltration-mpc.git
-cd diafiltration-mpc
+git clone https://github.com/sa1ntsinner/diafiltration-project.git
+cd diafiltration-project
 
 # create and activate the environment
 conda env create -f environment.yml
@@ -54,8 +54,8 @@ src/
 ├─ simulator.py        ← Open-loop & closed-loop logic
 ├─ tests.py            ← Disturbance & mismatch test functions
 ├─ views.py            ← Interactive Streamlit views per tab
-└─ assets/
-   └─ tank_image.png   ← Visual sketch for sidebar
+assets/
+└─ tank_image.png   ← Visual sketch for sidebar
 ```
 
 ---
