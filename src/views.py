@@ -3,228 +3,171 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-from constants import *
-from simulator import (
-    simulate_open_loop,
-    closed_loop,
-    closed_loop_threshold,
+# ── core / control / sim layers ────────────────────────────────────────────
+from core.params import default as P
+from control.builder import build_mpc
+from control       import mpc_robust
+from sim import (
+    simulate,
+    constant_u,
+    threshold_policy,
+    mpc_time_opt,
+    Nominal,
+    Tear,
+    KmMismatch,
 )
-from simulator_time_optimal import closed_loop_time_optimal
-from tests import disturbance_test, simulate_mismatch, batch_time_mismatch
 
-# ───────────────────────── ➊ helper ─────────────────────────
+# ───────────────────────── helper ─────────────────────────
 def batch_time(t, cP, cL, tol=1e-3):
+    idx = np.where((cP >= P.cP_star - tol) & (cL <= P.cL_star + tol))[0]
+    done = idx[0] if idx.size else len(t) - 1
+    return t[done] / 3600
+
+
+def spec_controller(N: int, *, params=P, rho_time: float = 0.10):
     """
-    Возвращает время (ч) первой точки, где cP ≥ cP* и cL ≤ cL*.
-    Если спецификации так и не достигнуты, возвращает t[-1] / 3600.
+    Quadratic spec-tracking MPC with a fixed per-step time penalty (ρ_time).
+    Returns a callable u = ctrl(state).
     """
-    idx = np.where((cP >= cP_star - tol) & (cL <= cL_star + tol))[0]
-    done_idx = idx[0] if idx.size else len(t) - 1
-    return t[done_idx] / 3600
-    
-# ──────────────────────────────────────────────────────────────────────────────
+    solver, meta, LBG, UBG = build_mpc(
+        N,                          # horizon
+        weights=dict(rho_time=rho_time),
+        params=params,
+    )
+
+    def _ctrl(state: np.ndarray) -> float:
+        x0 = np.hstack([np.tile(state, meta["N"] + 1), meta["u_init"]])
+        sol = solver(x0=x0, p=state, lbg=LBG, ubg=UBG)
+        return float(sol["x"].full().ravel()[meta["Uslice"]][0])
+
+    return _ctrl
+
+
+# ──────────────────────────────────────────────────────────
 def show_open_loop():
     st.markdown("## Open-loop Simulation")
 
-    # choose constant-u scenarios
-    num_u = st.slider("Number of control intervals", 1, 5, 1)
+    num_u = st.slider("How many constant-u values?", 1, 5, 1)
     u_values = [
-        st.slider(
-            f"u value {i+1}", 0.0, 1.0, 0.5, step=0.01, key=f"u_{i}"
-        )
+        st.slider(f"u value {i+1}", 0.0, 1.0, 0.5, 0.01, key=f"u_{i}")
         for i in range(num_u)
     ]
-
     if not u_values:
         st.warning("Please select at least one u value.")
         return
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3, gap="small")
     fig_cP, ax_cP = plt.subplots(figsize=(4, 3))
     fig_cL, ax_cL = plt.subplots(figsize=(4, 3))
     fig_V,  ax_V  = plt.subplots(figsize=(4, 3))
 
     for u in u_values:
-        t, V, ML = simulate_open_loop(u)
-        cP = MP / V
-        cL = ML / V
-        label = f"u = {u:.2f}"
-        ax_cP.plot(t / 3600, cP, label=label)
-        ax_cL.plot(t / 3600, cL, label=label)
-        ax_V .plot(t / 3600, V,  label=label)
+        t, V, ML, _ = simulate(constant_u(u), Nominal(P))
+        cP, cL = P.MP / V, ML / V
+        lab = f"u = {u:.2f}"
+        ax_cP.plot(t/3600, cP, label=lab)
+        ax_cL.plot(t/3600, cL, label=lab)
+        ax_V .plot(t/3600, V,  label=lab)
 
-    ax_cP.axhline(cP_star, ls="--", color="k", label="$c_P^*$")
-    ax_cP.set_ylabel("$c_P$")
-    ax_cP.legend()
-
-    ax_cL.axhline(cL_star, ls="--", color="k", label="$c_L^*$")
-    ax_cL.axhline(cL_max,  ls=":", color="r", label="$c_L^{max}$")
-    ax_cL.set_ylabel("$c_L$")
-    ax_cL.legend()
-
-    ax_V.set_ylabel("V [m³]")
-    ax_V.set_xlabel("Time [h]")
-    ax_V.legend()
+    ax_cP.axhline(P.cP_star, ls="--", color="k");  ax_cP.set_ylabel("$c_P$");  ax_cP.legend()
+    ax_cL.axhline(P.cL_star, ls="--", color="k");  ax_cL.axhline(P.cL_max, ls=":", color="r")
+    ax_cL.set_ylabel("$c_L$");  ax_cL.legend()
+    ax_V .set_ylabel("V [m³]"); ax_V .set_xlabel("Time [h]"); ax_V .legend()
 
     col1.pyplot(fig_cP, use_container_width=True)
     col2.pyplot(fig_cL, use_container_width=True)
-    col3.pyplot(fig_V,  use_container_width=True)
+    col3.pyplot(fig_V , use_container_width=True)
 
-    st.markdown(
-        "✅ These plots show how different constant control values affect the purification process."
-    )
+    st.markdown("✅ Different constant-u strategies and their effect.")
 
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────
 def show_mpc():
     st.markdown("## Closed-loop MPC Simulation")
 
-    # ─── 1. Baseline MPC ─────────────────────────────────────────────────────
-    st.markdown("---")
-    st.markdown("### 1. Baseline MPC")
-    st.markdown(
-        "This simulation uses a classic MPC with adjustable prediction horizon "
-        "$N$ to achieve the target concentrations."
-    )
+    # 1 ── Baseline MPC -----------------------------------------------------
+    st.markdown("---");  st.markdown("### 1. Baseline MPC")
+    N = st.slider("Prediction horizon N", 5, 50, 20)
 
-    N = st.slider("Prediction Horizon (N)", 5, 50, 20)
+    t_m, V_m, ML_m, u_m = simulate(spec_controller(N), Nominal(P))
+    cP_m, cL_m = P.MP / V_m, ML_m / V_m
+    plot_charts("Baseline MPC", t_m, cP_m, cL_m, u_m)
+    st.info(f"⏱️ Batch time: **{batch_time(t_m, cP_m, cL_m):.2f} h**")
 
-    t_mpc, V_mpc, ML_mpc, u_mpc = closed_loop(N=N)
-    cP_mpc = MP / V_mpc
-    cL_mpc = ML_mpc / V_mpc
+    # 2 ── Threshold policy -------------------------------------------------
+    st.markdown("---");  st.markdown("### 2. Threshold Policy ($u=0.86$ if $c_P≥55$)")
+    t_th, V_th, ML_th, u_th = simulate(threshold_policy(), Nominal(P))
+    cP_th, cL_th = P.MP / V_th, ML_th / V_th
+    for lab, t, cP, cL, u in [("MPC", t_m, cP_m, cL_m, u_m),
+                              ("Threshold", t_th, cP_th, cL_th, u_th)]:
+        plot_charts(lab, t, cP, cL, u)
 
-    plot_charts("Baseline MPC", t_mpc, cP_mpc, cL_mpc, u_mpc)
-
-    # ─── 2. Threshold Policy ────────────────────────────────────────────────
-    st.markdown("---")
-    st.markdown("### 2. Comparison with Threshold Policy")
-    st.markdown(
-        "This policy applies $u=0.86$ if $c_P \\geq 55$, otherwise $u=0$."
-        " It is a simpler but less flexible strategy."
-    )
-
-    # --- calculate once, reused later for batch-time comparison
-    t_thr, V_thr, ML_thr, u_thr = closed_loop_threshold()
-    cP_thr = MP / V_thr
-    cL_thr = ML_thr / V_thr
-
-    for label, t, cP, cL, u in [
-        ("MPC",              t_mpc, cP_mpc, cL_mpc, u_mpc),
-        ("Threshold Policy", t_thr, cP_thr, cL_thr, u_thr),
-    ]:
-        plot_charts(label, t, cP, cL, u)
-
-    st.markdown(
-        "✅ **MPC** dynamically optimizes $u$ to meet specs faster.  \n"
-        "❌ **Threshold Policy** is simpler but may be slower or violate constraints."
-    )
-
-    # ─── 3. Time-optimal MPC ────────────────────────────────────────────────
-    st.markdown("---")
-    st.markdown("### 3. Time-optimal MPC")
-    st.markdown("""
-    This controller explicitly encourages high $u$ values to minimize total batch
-    duration while respecting constraints. The objective function is designed
-    to penalize **low $u$**, indirectly pushing the system toward faster completion.
-    """)
-
-    N_opt = st.slider("Prediction Horizon for Time-Optimal MPC",
-                      5, 50, 20, key="opt_N")
-
-    t_opt, V_opt, ML_opt, u_opt = closed_loop_time_optimal(N_opt)
-    cP_opt = MP / V_opt
-    cL_opt = ML_opt / V_opt
-    plot_charts("Time-optimal MPC", t_opt, cP_opt, cL_opt, u_opt)
-
-    # ─── ➋ честно пересчитываем длительность обеих партий ───
-    t_thr,  V_thr,  ML_thr,  _ = closed_loop_threshold()
-    cP_thr = MP / V_thr
-    cL_thr = ML_thr / V_thr
-
-    batch_time_opt = batch_time(t_opt, cP_opt, cL_opt)
-    batch_time_thr = batch_time(t_thr, cP_thr, cL_thr)
+    # 3 ── Time-optimal MPC -------------------------------------------------
+    st.markdown("---");  st.markdown("### 3. Time-optimal MPC")
+    N_opt = st.slider("Horizon (time-opt.)", 5, 50, 20, key="opt")
+    t_o, V_o, ML_o, u_o = simulate(mpc_time_opt(N_opt), Nominal(P))
+    cP_o, cL_o = P.MP / V_o, ML_o / V_o
+    plot_charts("Time-optimal MPC", t_o, cP_o, cL_o, u_o)
 
     st.success(
-        f"🏁 Batch finished — time-optimal MPC: **{batch_time_opt:.2f} h**, "
-        f"threshold policy: **{batch_time_thr:.2f} h**."
+        f"🏁 Time-optimal batch **{batch_time(t_o, cP_o, cL_o):.2f} h**  "
+        f"vs Threshold **{batch_time(t_th, cP_th, cL_th):.2f} h**"
     )
 
-    st.markdown("""
-    ✅ The time-optimal MPC increases $u$ when it is safe, reducing total purification time.  
-    ⏱️ Try increasing N to see faster convergence (with more aggressive control).
-    """)
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────
 def plot_charts(title, t, cP, cL, u):
-    """
-    Draw three charts; automatically truncate trajectories at the first instant
-    when cP ≥ cP* and cL ≤ cL* (within numerical tolerance).
-    """
     tol = 1e-3
+    idx_end = np.where((cP >= P.cP_star - tol) & (cL <= P.cL_star + tol))[0]
+    idx_end = idx_end[0] if idx_end.size else len(t) - 1
 
-    reached_idx = np.where(
-        (cP >= cP_star - tol) & (cL <= cL_star + tol)
-    )[0]
-    idx_end = reached_idx[0] if reached_idx.size else len(t) - 1
-
-    # truncate
-    t_plot  = t[: idx_end + 1]
-    cP_plot = cP[: idx_end + 1]
-    cL_plot = cL[: idx_end + 1]
-    u_plot  = u[: max(1, min(len(u), idx_end))]
+    t_p, cP_p, cL_p = t[:idx_end+1], cP[:idx_end+1], cL[:idx_end+1]
+    u_p = u[: max(1, min(len(u), idx_end))]
 
     st.markdown(f"**{title}**")
-    col1, col2, col3 = st.columns(3)
+    c1, c2, c3 = st.columns(3, gap="small")
 
-    # — cP —
-    fig1, ax1 = plt.subplots(figsize=(4, 3))
-    ax1.plot(t_plot / 3600, cP_plot)
-    ax1.axhline(cP_star, ls="--", color="k")
-    ax1.set_ylabel("$c_P$")
-    col1.pyplot(fig1, use_container_width=True)
+    fig, ax = plt.subplots(figsize=(4,3))
+    ax.plot(t_p/3600, cP_p); ax.axhline(P.cP_star, ls="--", color="k")
+    ax.set_ylabel("$c_P$"); c1.pyplot(fig, use_container_width=True)
 
-    # — cL —
-    fig2, ax2 = plt.subplots(figsize=(4, 3))
-    ax2.plot(t_plot / 3600, cL_plot)
-    ax2.axhline(cL_star, ls="--", color="k")
-    ax2.axhline(cL_max,  ls=":", color="r")
-    ax2.set_ylabel("$c_L$")
-    col2.pyplot(fig2, use_container_width=True)
+    fig, ax = plt.subplots(figsize=(4,3))
+    ax.plot(t_p/3600, cL_p)
+    ax.axhline(P.cL_star, ls="--", color="k"); ax.axhline(P.cL_max, ls=":", color="r")
+    ax.set_ylabel("$c_L$"); c2.pyplot(fig, use_container_width=True)
 
-    # — u —
-    fig3, ax3 = plt.subplots(figsize=(4, 3))
-    ax3.step(t_plot[: len(u_plot)] / 3600, u_plot, where="post")
-    ax3.set_ylabel("$u$")
-    ax3.set_xlabel("Time [h]")
-    col3.pyplot(fig3, use_container_width=True)
+    fig, ax = plt.subplots(figsize=(4,3))
+    ax.step(t_p[:len(u_p)]/3600, u_p, where="post")
+    ax.set_ylabel("$u$"); ax.set_xlabel("Time [h]")
+    c3.pyplot(fig, use_container_width=True)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────
 def show_tests():
     st.markdown("## Test Scenarios")
 
-    st.subheader("1. Disturbance Test")
-    t, V, ML, u = disturbance_test()
-    plot_charts("Disturbance", t, MP / V, ML / V, u)
+    # 1 -- Tear disturbance -------------------------------------------------
+    st.subheader("1. Filter-cake tear disturbance")
+    t, V, ML, u = simulate(spec_controller(20), Tear(P))
+    plot_charts("Tear Disturbance", t, P.MP / V, ML / V, u)
 
-    st.subheader("2. Plant–Model Mismatch")
+    # 2 -- Plant-model mismatch (robust) ------------------------------------
+    st.subheader("2. Plant–Model Mismatch (robust MPC)")
     for factor in [0.75, 0.5, 0.25]:
-        st.markdown(f"**kM mismatch factor = {factor}**")
-        t, V, ML, u = simulate_mismatch(factor)
-        plot_charts(
-            f"Mismatch factor = {factor}", t, MP / V, ML / V, u
-        )
+        scen = KmMismatch(factor, P)
+        t, V, ML, u = simulate(mpc_robust(20), scen)
+        plot_charts(f"Mismatch factor = {factor}", t, P.MP / V, ML / V, u)
 
-    st.subheader("3. Batch Time and Peak $c_L$")
-    for factor in [0.75, 0.5, 0.25]:
-        t_b, cL_pk, ok = batch_time_mismatch(factor)
-        if ok:
-            st.success(
-                f"factor={factor:.2f}: ✅ batch = {t_b:.2f} h, "
-                f"peak $c_L$ = {cL_pk:.1f}"
-            )
-        else:
-            st.error(
-                f"factor={factor:.2f}: ❌ specs NOT met in {t_b:.2f} h, "
-                f"peak $c_L$ = {cL_pk:.1f}"
-            )
+    # 3 -- Summary table ----------------------------------------------------
+    st.subheader("3. Batch Time vs Mismatch")
+    cols = st.columns(3)
+    for i, factor in enumerate([0.75, 0.5, 0.25]):
+        scen = KmMismatch(factor, P)
+        t, V, ML, _ = simulate(mpc_robust(20), scen)
+        cP, cL = P.MP / V, ML / V
+        t_b = batch_time(t, cP, cL)
+        peak = np.max(cL)
+        ok = (cP[-1] >= P.cP_star) and (cL[-1] <= P.cL_star)
+        msg = f"✅ {t_b:.2f} h  |  peak $c_L$ = {peak:.0f}" if ok else \
+              f"❌ >6 h  |  peak $c_L$ = {peak:.0f}"
+        cols[i].info(f"factor {factor}:  {msg}")

@@ -11,5 +11,6 @@ __pycache__/
 # Jupyter-сессии
 .ipynb_checkpoints/
 # артефакты
+*.png
 *.pdf
 results/
