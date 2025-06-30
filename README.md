@@ -87,7 +87,7 @@ git clone https://github.com/sa1ntsinner/diafiltration-project.git
 cd diafiltration-project
 
 # Set up environment
-conda env create -f environment.yml
+conda env create -f environment.yml --name DFP
 conda activate DFP
 
 # Launch UI
