@@ -5,10 +5,10 @@
 
 <div align="left">
 
-🔄 Non-linear **batch diafiltration model** with *volumetric* + *concentration dynamics*
-🧠 Time-optimal **MPC implementation** using **CasADi** for *symbolic optimization*
-🛡️ Robust to **disturbances** and **plant-model mismatches**
-🌐 Streamlit-based *interface* for **interactive control experiments** and **benchmarking**
+- 🔄 Non-linear **batch diafiltration model** with *volumetric* + *concentration dynamics*
+- 🧠 Time-optimal **MPC implementation** using **CasADi** for *symbolic optimization*
+- 🛡️ Robust to **disturbances** and **plant-model mismatches**
+- 🌐 Streamlit-based *interface* for **interactive control experiments** and **benchmarking**
 
 </div>
 
