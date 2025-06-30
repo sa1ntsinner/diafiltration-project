@@ -1,14 +1,14 @@
 # 🧪 Diafiltration Process MPC
 <sub><em>Advanced Process Control • SoSe 2025 • TU Dortmund</em></sub>
 
-[![Python 3.9](https://img.shields.io/badge/python-3.9-blue?logo=python)](https://www.python.org/) 
-[![License BSD-3 (TU Dortmund)](https://img.shields.io/badge/license-BSD--3--Clause-green)](#-license)
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue?logo=python)](https://www.python.org/)
 
 <div align="center">
 
-🚰 Non-linear **batch diafiltration model**  
-🧠 Advanced **Time-Optimal MPC** using **CasADi**  
+🔄 Non-linear **batch diafiltration model** with *volumetric* + *concentration dynamics*
+🧠 Time-optimal **MPC implementation** using **CasADi** for *symbolic optimization*
 🛡️ Robust to **disturbances** and **plant-model mismatches**
+🌐 Streamlit-based *interface* for **interactive control experiments** and **benchmarking**
 
 </div>
 
@@ -61,7 +61,7 @@ diafiltration-project/
 ├── .gitignore                      # Ignore cache, .env, IDEs, results
 ├── environment.yml                 # Conda environment with pinned packages
 ├── requirements.txt                # pip-compatible dependency list
-├── README.md                       # 📘 Project documentation
+├── README.md                       # Project documentation
 ```
 
 ---
@@ -116,8 +116,6 @@ Filter-cake tears
 Parameter mismatches (Km)
 Protein leakage
 Monte-Carlo stress testing with randomised plants
-
-All simulations are interactive and respond live to user input.
 
 ---
 
