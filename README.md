@@ -50,7 +50,7 @@ diafiltration-project/
 │   │   ├── params.py               # Global parameters (MP, V0, cP_star etc.)
 │   │   ├── tariff.py               # Time-of-use electricity cost function
 │
-│   ├── experiments/               # Extra simulation tools
+│   ├── experiments/                # Extra simulation tools
 │   │   ├── montecarlo.py           # Monte-Carlo robustness test logic
 │
 │   ├── sim/                        # Simulation wrappers
