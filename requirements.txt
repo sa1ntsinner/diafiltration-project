@@ -1,4 +1,19 @@
-streamlit
-numpy
-casadi
-matplotlib
+# Core numerical & optimization
+numpy>=1.23
+casadi>=3.6
+scipy>=1.11       # optional but useful for simulations and interpolation
+
+# App and visualization
+streamlit>=1.32
+matplotlib>=3.7
+
+# Testing and dev tools
+pytest
+black             # for code formatting (optional)
+
+# Optional additions
+pandas            # useful for data handling and plotting
+jupyterlab        # optional, for experimentation
+ipykernel         # Jupyter kernel support
+seaborn           # optional, improved plotting
+streamlit-toggle-switch  # optional, Streamlit UI enhancement
