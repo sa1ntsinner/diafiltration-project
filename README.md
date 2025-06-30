@@ -3,7 +3,7 @@
 
 [![Python 3.9](https://img.shields.io/badge/python-3.9-blue?logo=python)](https://www.python.org/)
 
-<div align="center">
+<div align="left">
 
 🔄 Non-linear **batch diafiltration model** with *volumetric* + *concentration dynamics*
 🧠 Time-optimal **MPC implementation** using **CasADi** for *symbolic optimization*
