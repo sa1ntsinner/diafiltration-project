@@ -29,7 +29,7 @@ All simulations are dynamic and interactive.
 ---
 
 ## 📂 Project Structure
-
+```text
 src/
 ├── app.py # Streamlit app launcher and navigation
 ├── constants.py # Global model parameters
@@ -42,7 +42,7 @@ src/
 │ └── tank_image.png # Sidebar illustration
 ├── core/, control/, sim/, experiments/
 │ └── Modular control logic and scenario definitions
-
+```
 
 ---
 
@@ -63,8 +63,8 @@ src/
 ## 🧑‍💻 Quickstart
 
 ```bash
-git clone https://github.com/sa1ntsinner/diafiltration-mpc.git
-cd diafiltration-mpc
+git clone https://github.com/sa1ntsinner/diafiltration-project.git
+cd diafiltration-project
 
 # Set up environment
 conda env create -f environment.yml
@@ -76,28 +76,28 @@ streamlit run src/app.py
 
 ---
 
-## 🖥️ Streamlit Dashboard
-# 🟠 Open-loop Simulation
+# 🖥️ Streamlit Dashboard
+## 🟠 Open-loop Simulation
 Test and compare constant u values (1–5 options). Visualise their effect on:
 Product concentration ($c_P$)
 Contaminant level ($c_L$)
 Batch volume ($V$)
 
-# 🔵 MPC Showcase
+## 🔵 MPC Showcase
 Compare controller types:
 Spec-tracking MPC
 Threshold policy
 Time-optimal MPC
 Economic MPC (TOU electricity tariff)
 
-# 🧪 Robustness Testing
+## 🧪 Robustness Testing
 Evaluate MPC resilience under:
 Filter-cake tears
 Parameter mismatches (Km)
 Protein leakage
 Monte-Carlo stress testing with randomised plants
 
-# All simulations are interactive and respond live to user input.
+All simulations are interactive and respond live to user input.
 
 ---
 
