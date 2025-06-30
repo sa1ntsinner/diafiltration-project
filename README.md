@@ -30,18 +30,38 @@ All simulations are dynamic and interactive.
 
 ## 📂 Project Structure
 ```text
-src/
-├── app.py # Streamlit app launcher and navigation
-├── constants.py # Global model parameters
-├── model.py # Diafiltration dynamics (RHS) + RK4 integrator
-├── mpc.py # MPC builder (CasADi formulation)
-├── simulator.py # Open/closed-loop simulation logic
-├── tests.py # Test scenarios (disturbance, mismatch, MC)
-├── views.py # Streamlit UI logic (tabs)
+diafiltration-project/
 ├── assets/
-│ └── tank_image.png # Sidebar illustration
-├── core/, control/, sim/, experiments/
-│ └── Modular control logic and scenario definitions
+│   └── tank_image.png              # Sidebar image for Streamlit
+│
+├── src/
+│   ├── app.py                      # Streamlit entrypoint with sidebar & routing
+│   ├── views.py                    # UI logic for Open-loop, MPC, Tests tabs
+│
+│   ├── control/                    # MPC builder modules
+│   │   ├── __init__.py             # Imports robust/builder factories
+│   │   ├── builder.py              # build_mpc(): MPC setup (CasADi)
+│   │   ├── robust.py               # Robust MPC formulation
+│
+│   ├── core/                       # Core model and numerical routines
+│   │   ├── discretise.py           # RK4 integrator for simulation
+│   │   ├── dynamics.py             # Diafiltration RHS model
+│   │   ├── linearise.py            # Continuous-time Jacobians (A, B)
+│   │   ├── params.py               # Global parameters (MP, V0, cP_star etc.)
+│   │   ├── tariff.py               # Time-of-use electricity cost function
+│
+│   ├── experiments/               # Extra simulation tools
+│   │   ├── montecarlo.py           # Monte-Carlo robustness test logic
+│
+│   ├── sim/                        # Simulation wrappers
+│   │   ├── __init__.py             # Imports simulate, mpc_* controllers
+│   │   ├── simulate.py             # Core simulation loop (simulate())
+│   │   ├── scenarios.py            # Nominal, tear, mismatch, leakage etc.
+│
+├── .gitignore                      # Ignore cache, .env, IDEs, results
+├── environment.yml                 # Conda environment with pinned packages
+├── requirements.txt                # pip-compatible dependency list
+├── README.md                       # 📘 Project documentation
 ```
 
 ---
@@ -122,4 +142,3 @@ All simulations are interactive and respond live to user input.
 
 ## © Licence
 This student project is part of the course **Advanced Process Control**, TU Dortmund (2025).  
-Licensed under BSD-3-Clause.
