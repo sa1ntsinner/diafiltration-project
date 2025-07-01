@@ -97,20 +97,20 @@ streamlit run src/app.py
 ---
 
 ## 🖥️ Streamlit Dashboard
-### 🟠 Open-loop Simulation
+🟠 Open-loop Simulation \
 Test and compare constant u values (1–5 options). Visualise their effect on:
 Product concentration ($c_P$)
 Contaminant level ($c_L$)
 Batch volume ($V$)
 
-### 🔵 MPC Showcase
+🔵 MPC Showcase \
 Compare controller types:
 Spec-tracking MPC
 Threshold policy
 Time-optimal MPC
 Economic MPC (TOU electricity tariff)
 
-### 🧪 Robustness Testing
+🧪 Robustness Testing \
 Evaluate MPC resilience under:
 Filter-cake tears
 Parameter mismatches (Km)
