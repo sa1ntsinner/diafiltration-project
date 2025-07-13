@@ -1,12 +1,25 @@
+# environment.yml
+
 name: DFP
 channels:
   - conda-forge
+  - defaults
+  - willkessler
 dependencies:
   - python=3.9
   - numpy=1.26
   - matplotlib=3.8
   - casadi=3.7.0
-  - pytest
+  - scipy
   - streamlit
-  - pymupdf
-  - pip
+  - pytest
+
+  # Recommended additions
+  - pandas        # useful for future data analysis or Monte Carlo result handling
+  - jupyterlab    # optional, for experimentation / prototyping in notebooks
+  - ipykernel     # ensures Jupyter kernel support
+  - seaborn       # optional, nicer plots in tests/debugging
+  - pip           # to allow pip-installed packages
+  - pip:
+      - black     # optional, for code formatting
+      - streamlit-toggle-switch  # optional UI improvement (if used)

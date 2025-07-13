@@ -1,3 +1,5 @@
+# .gitignore
+
 # byte-кэш и метаданные
 __pycache__/
 *.py[cod]

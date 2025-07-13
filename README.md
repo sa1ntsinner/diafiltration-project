@@ -1,89 +1,141 @@
-# Diafiltration — Time-Optimal MPC  
-<sub><em>Advanced Process Control, SoSe 2025 • TU Dortmund</em></sub>
+# 🧪 Diafiltration Process MPC
+<sub><em>Advanced Process Control • SoSe 2025 • TU Dortmund</em></sub>
 
-[![Python 3.9](https://img.shields.io/badge/python-3.9-blue?logo=python)](https://www.python.org/) 
-[![Licence BSD-3 (TU Dortmund)](https://img.shields.io/badge/license-BSD--3--Clause-green)](#-licence)
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue?logo=python)](https://www.python.org/)
 
-<div align="center">
+<div align="left">
 
-**Non-linear batch diafiltration model** ⨯ **Time-optimal MPC (CasADi)**  
-Robustness to **disturbance & plant-model mismatch** is built-in.
+- 🔄 Non-linear **batch diafiltration model** with *volumetric* + *concentration dynamics*
+- 🧠 Time-optimal **MPC implementation** using **CasADi** for *symbolic optimization*
+- 🛡️ Robust to **disturbances** and **plant-model mismatches**
+- 🌐 Streamlit-based *interface* for **interactive control experiments** and **benchmarking**
 
 </div>
 
 ---
 
-## ✨ Features
+## ✨ Overview
 
-|   | Module | Description |
-|---|--------|-------------|
-| ✅ | `model.py` | Non-linear dynamics + RK4 integrator |
-| ✅ | `mpc.py` | Time-optimal MPC with constraints |
-| ✅ | `simulator.py` | Open/closed-loop simulation engine |
-| ✅ | `tests.py` | Robustness: disturbance + param mismatch |
-| ✅ | `views.py` | Streamlit frontend logic (MPC, tests, open-loop) |
-| ✅ | `app.py` | Streamlit router & layout |
-| ✅ | `constants.py` | Parameters used globally |
+This project implements and evaluates **non-linear Model Predictive Control (MPC)** strategies for a **diafiltration process**. A Streamlit-based UI enables full simulation and comparison of:
+
+- **Constant open-loop control**
+- **Heuristic threshold policy**
+- **Time-optimal MPC**
+- **Economic MPC with time-of-use energy tariff**
+- **Robust MPC under uncertainty**
+
+All simulations are dynamic and interactive.
 
 ---
 
-## 🚀 Quickstart
+## 📂 Project Structure
+```text
+diafiltration-project/
+├── assets/
+│   └── tank_image.png              # Sidebar image for Streamlit
+│
+├── src/
+│   ├── app.py                      # Streamlit entrypoint with sidebar & routing
+│   ├── views.py                    # UI logic for Open-loop, MPC, Tests tabs
+│
+│   ├── control/                    # MPC builder modules
+│   │   ├── __init__.py             # Imports robust/builder factories
+│   │   ├── builder.py              # build_mpc(): MPC setup (CasADi)
+│   │   ├── robust.py               # Robust MPC formulation
+│
+│   ├── core/                       # Core model and numerical routines
+│   │   ├── discretise.py           # RK4 integrator for simulation
+│   │   ├── dynamics.py             # Diafiltration RHS model
+│   │   ├── linearise.py            # Continuous-time Jacobians (A, B)
+│   │   ├── params.py               # Global parameters (MP, V0, cP_star etc.)
+│   │   ├── tariff.py               # Time-of-use electricity cost function
+│
+│   ├── experiments/                # Extra simulation tools
+│   │   ├── montecarlo.py           # Monte-Carlo robustness test logic
+│
+│   ├── sim/                        # Simulation wrappers
+│   │   ├── __init__.py             # Imports simulate, mpc_* controllers
+│   │   ├── simulate.py             # Core simulation loop (simulate())
+│   │   ├── scenarios.py            # Nominal, tear, mismatch, leakage etc.
+│
+├── environment.yml                 # Conda environment with pinned packages
+├── requirements.txt                # pip-compatible dependency list
+├── README.md                       # Project documentation
+```
+
+---
+
+## ✅ Features
+
+| ✅ | Module         | Description |
+|----|----------------|-------------|
+| ✔️ | `model.py`     | RK4 simulation of non-linear batch diafiltration |
+| ✔️ | `mpc.py`       | Time-optimal MPC with terminal constraints |
+| ✔️ | `simulator.py` | Unified open- and closed-loop simulator |
+| ✔️ | `views.py`     | Streamlit dashboard with 3 interactive tabs |
+| ✔️ | `tests.py`     | Evaluation under disturbances and uncertainties |
+| ✔️ | `tariff.py`    | Piecewise time-of-use electricity cost model |
+| ✔️ | `montecarlo.py`| Batch-wise robustness testing via random plant draws |
+
+---
+
+## 🧑‍💻 Quickstart
 
 ```bash
-git clone https://github.com/sa1ntsinner/diafiltration-mpc.git
-cd diafiltration-mpc
+git clone https://github.com/sa1ntsinner/diafiltration-project.git
+cd diafiltration-project
 
-# create and activate the environment
-conda env create -f environment.yml
+# Set up environment
+conda env create -f environment.yml --name DFP
 conda activate DFP
 
-# launch the Streamlit UI
+# Launch UI
 streamlit run src/app.py
 ```
 
 ---
 
-## 🖥️ Streamlit Interface
+## 🖥️ Streamlit Dashboard
+🟠 Open-loop Simulation \
+Test and compare constant u values (1–5 options). Visualise their effect on:
+Product concentration ($c_P$)
+Contaminant level ($c_L$)
+Batch volume ($V$)
 
-```text
-src/
-├─ app.py              ← Sidebar navigation & layout
-├─ constants.py        ← Model constants (V0, MP, c*_L etc.)
-├─ model.py            ← RK4 integrator and right-hand side
-├─ mpc.py              ← Time-optimal MPC builder (CasADi)
-├─ simulator.py        ← Open-loop & closed-loop logic
-├─ tests.py            ← Disturbance & mismatch test functions
-├─ views.py            ← Interactive Streamlit views per tab
-└─ assets/
-   └─ tank_image.png   ← Visual sketch for sidebar
-```
+🔵 MPC Showcase \
+Compare controller types:
+Spec-tracking MPC
+Threshold policy
+Time-optimal MPC
+Economic MPC (TOU electricity tariff)
 
----
-
-## 🔧 Functionality
-
-| Page       | Description |
-|------------|-------------|
-| 🟠 Open-loop | Try 1–5 constant `u` values and compare results |
-| 🔵 MPC        | Run time-optimal MPC with horizon slider |
-| 🧪 Test       | Visualise plant-model mismatch + disturbance robustness |
-
-All simulations are interactive and respond live to user input.
+🧪 Robustness Testing \
+Evaluate MPC resilience under:
+Filter-cake tears
+Parameter mismatches (Km)
+Protein leakage
+Monte-Carlo stress testing with randomised plants
 
 ---
 
 ## 📜 Citing
 ```bibtex
-@misc{DiafiltrationMPC2025,
-  author       = {Elmir Mirzayev},
-  title        = {Diafiltration — Time‐Optimal MPC},
-  howpublished = {\url{https://github.com/sa1ntsinner/diafiltration-mpc}},
-  year         = {2025}
+@misc{mirzayev2025diafiltration,
+  author       = {Mirzayev, Elmir and Dharan, Rakesh and Krishan, Kirupa},
+  title        = {Diafiltration Process MPC},
+  year         = {2025},
+  howpublished = {\url{https://github.com/sa1ntsinner/diafiltration-project}},
+  note         = {Advanced Process Control, TU Dortmund}
 }
 ```
+---
+
+**Contributors:**  
+🧑‍💻 Elmir Mirzayev ([sa1ntsinner](https://github.com/sa1ntsinner))  
+🧑‍💻 Rakesh Dharan ([Rakeshdharan](https://github.com/Rakeshdharan))  
+🧑‍💻 Kirupa Krishan ([kirupakrishan](https://github.com/kirupakrishan))
 
 ---
 
 ## © Licence
 This student project is part of the course **Advanced Process Control**, TU Dortmund (2025).  
-Licensed under BSD-3-Clause.
