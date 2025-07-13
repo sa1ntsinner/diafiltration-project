@@ -153,77 +153,69 @@ def plot_charts(
 ) -> None:
     """
     Show three *separate* 4×3-inch panels (cL, cP, u) in a single row.
-
-    This matches the compact layout used on the open-loop page:
-      • one Streamlit column per metric
-      • each panel has its own legend
-      • control vector `u` is padded if it is one sample shorter than `t`
-        (happens when the simulation stops exactly at the spec point)
+    
+    Notes:
+      - One Streamlit column per metric.
+      - Each panel has its own legend.
+      - Control vector `u` is padded if one sample shorter than `t`.
+      - Tear window shading (30 ≤ cP ≤ 60) applied before rendering.
     """
-    import streamlit as st
-    import matplotlib.pyplot as plt
 
-    # ─────────────────── data prep ──────────────────────────────────────
-    time_h = np.asarray(t) / 3600.0
+    # ─────────────────── Data preparation ────────────────────────────────
+    time_h = np.asarray(t) / 3600.0  # Convert time to hours for plotting
 
-    # Guard against length mismatch (u often N-1 samples)
     if len(u) < len(time_h):
+        # Pad `u` if it's one sample shorter (common for MPC stopping at spec)
         pad = np.full(len(time_h) - len(u), u[-1] if len(u) else 0.0)
         u_plot = np.concatenate([u, pad])
     else:
         u_plot = u[: len(time_h)]
 
-    # ─────────────────── Streamlit layout ───────────────────────────────
-    st.markdown(f"**{title}**")
-    col_cP, col_cL, col_u = st.columns(3, gap="small")
-
-    # ---------- panel 1 : protein concentration ------------------------
-    fig, ax = plt.subplots(figsize=(4, 3))
-    ax.plot(time_h, cP, color="C1", label="cP")
-    ax.axhline(P.cP_star, ls="--", color="grey", label="cP target 100")
-    ax.set_ylabel("Protein cP  [mol m⁻³]")
-    ax.set_xlabel("Time [h]")
-    ax.legend(loc="best")
-    col_cP.pyplot(fig, use_container_width=True)
-
-    # ---------- panel 2 : lactose concentration ------------------------
-    fig, ax = plt.subplots(figsize=(4, 3))
-    ax.plot(time_h, cL, color="C0", label="cL")
-    ax.axhline(P.cL_star, ls="--", color="grey", label="cL target 15")
-    ax.axhline(P.cL_max,  ls=":",  color="r",    label="cL max 570")
-    ax.set_ylabel("Lactose cL  [mol m⁻³]")
-    ax.set_xlabel("Time [h]")
-    ax.legend(loc="best")
-    col_cL.pyplot(fig, use_container_width=True)
-
-    # ---------- panel 3 : control trajectory ---------------------------
-    fig, ax = plt.subplots(figsize=(4, 3))
-    ax.step(time_h, u_plot, where="post", color="C2", label="u")
-    ax.set_ylabel("Control u")
-    ax.set_xlabel("Time [h]")
-    ax.legend(loc="best")
-    col_u.pyplot(fig, use_container_width=True)
-
-    # ---------- optional tear-window shading (adds identical stripe to all) --
+    # ─────────────────── Identify tear region once ───────────────────────
+    t0, t1 = None, None
     if highlight_tear:
-        # Identify contiguous region with 30 ≤ cP ≤ 60
         mask = (cP >= 30.0) & (cP <= 60.0)
         if np.any(mask):
             i0 = np.argmax(mask)               # first True
             i1 = i0 + np.argmax(~mask[i0:])    # first False after i0
             t0, t1 = time_h[i0], time_h[i1]
 
-            # Helper for shading any axis object
-            def _shade(ax_obj):
-                ax_obj.axvspan(t0, t1, color="yellow", alpha=0.30,
-                               label="Disturbance period")
-                ax_obj.legend(loc="best")
+    # ─────────────────── Streamlit layout with 3 columns ─────────────────
+    st.markdown(f"**{title}**")
+    col_cP, col_cL, col_u = st.columns(3, gap="small")
 
-            # Re-draw shading on the already-rendered figures
-            for c in (col_cP, col_cL, col_u):
-                fig_ax = c.pyplot.figure              # reference to figure
-                _shade(fig_ax.axes[0])                # shade first (only) axis
-                fig_ax.canvas.draw_idle()             # refresh
+    # Panel 1 – Protein concentration
+    fig, ax = plt.subplots(figsize=(4, 3))
+    ax.plot(time_h, cP, color="C1", label="cP")
+    ax.axhline(P.cP_star, ls="--", color="grey", label="cP target 100")
+    if t0 is not None:
+        ax.axvspan(t0, t1, color="yellow", alpha=0.30, label="Disturbance period")
+    ax.set_ylabel("Protein cP  [mol m⁻³]")
+    ax.set_xlabel("Time [h]")
+    ax.legend(loc="best")
+    col_cP.pyplot(fig, use_container_width=True)
+
+    # Panel 2 – Lactose concentration
+    fig, ax = plt.subplots(figsize=(4, 3))
+    ax.plot(time_h, cL, color="C0", label="cL")
+    ax.axhline(P.cL_star, ls="--", color="grey", label="cL target 15")
+    ax.axhline(P.cL_max, ls=":", color="r", label="cL max 570")
+    if t0 is not None:
+        ax.axvspan(t0, t1, color="yellow", alpha=0.30, label="Disturbance period")
+    ax.set_ylabel("Lactose cL  [mol m⁻³]")
+    ax.set_xlabel("Time [h]")
+    ax.legend(loc="best")
+    col_cL.pyplot(fig, use_container_width=True)
+
+    # Panel 3 – Control trajectory
+    fig, ax = plt.subplots(figsize=(4, 3))
+    ax.step(time_h, u_plot, where="post", color="C2", label="u")
+    if t0 is not None:
+        ax.axvspan(t0, t1, color="yellow", alpha=0.30, label="Disturbance period")
+    ax.set_ylabel("Control u")
+    ax.set_xlabel("Time [h]")
+    ax.legend(loc="best")
+    col_u.pyplot(fig, use_container_width=True)
 
 # ──────────────────────────────── MPC Page ─────────────────────────────────
 
@@ -283,26 +275,41 @@ def show_tests() -> None:
     t, V, ML, u = simulate(spec_controller(5), Tear(P))
     plot_charts("Tear disturbance", t, P.MP / V, ML / V, u, highlight_tear=True)
 
-    # 2. Parameter mismatch with robust MPC
+    # 2. Plant-model mismatch scenario
     st.subheader("2. Plant-model mismatch (robust MPC)")
     tol = 1e-3
-    summary = []  # summary list of results
+    summary = []
 
     for factor in [0.75, 0.5, 0.25]:
         scen = KmMismatch(factor, P)
         t, V, ML, u = simulate(mpc_robust(5), scen)
         plot_charts(f"Mismatch factor {factor}", t, P.MP / V, ML / V, u)
 
-        cP, cL = P.MP / V, ML / V
-        ok = (cP[-1] >= P.cP_star - tol) and (cL[-1] <= P.cL_star + tol)
-        t_b = batch_time(t, cP, cL) if ok else P.t_final/3600
+        cP = P.MP / V
+        cL = ML / V
+
+        # 1️⃣ Check if spec constraints ever met
+        idx = np.where((cP >= P.cP_star - tol) & (cL <= P.cL_star + tol))[0]
+        spec_met = idx.size > 0
+
+        # 2️⃣ Check if path constraints were ever violated
+        path_violated = np.any(cP > P.cP_star + tol) or np.any(cL > P.cL_max + tol)
+
+        # ✅ Final decision: both spec must be met and no violation
+        ok = spec_met and not path_violated
+
+        # Use first spec reach time if spec_met, else t_final
+        t_b = t[idx[0]] / 3600 if spec_met else P.t_final / 3600
         peak = float(np.max(cL))
         summary.append((factor, ok, t_b, peak))
 
     st.markdown("##### Batch-time summary")
     cols = st.columns(3, gap="small")
     for col, (factor, ok, t_b, peak) in zip(cols, summary):
-        msg = f"✅ {t_b:.2f} h, peak $c_L≈{peak:.0f}$" if ok else f"❌ > {t_b:.2f} h, peak $c_L≈{peak:.0f}$"
+        if ok:
+            msg = f"✅ {t_b:.2f} h, peak $c_L≈{peak:.0f}$"
+        else:
+            msg = f"❌ Spec or constraints failed, peak $c_L≈{peak:.0f}$"
         col.info(f"factor {factor}: {msg}")
 
     # 3. Protein leakage scenario
