@@ -1,4 +1,6 @@
 """
+sim/__init__.py
+
 Simulation package init
 ────────────────────────
 This makes key functions and classes from the submodules available at package level.

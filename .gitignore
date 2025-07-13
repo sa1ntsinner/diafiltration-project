@@ -17,8 +17,6 @@ venv/
 .ipynb_checkpoints/
 
 # Simulation and result artifacts
-*.png
-*.pdf
 *.csv
 *.log
 *.mp4

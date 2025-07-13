@@ -1,4 +1,6 @@
 """
+sim/scenarios.py
+
 Scenario classes – each supplies a continuous-time RHS f(x, u, t).
 
 The base class `Scenario` wraps around a process model (`ProcessParams`) and
@@ -74,20 +76,37 @@ class Nominal(Scenario):
 
 class Tear(Scenario):
     """
-    Simulates a physical membrane tear causing excessive flux.
+    Simulates a membrane “filter-cake tear”:
 
-    If protein concentration is between 30 and 60 kg/m³,
-    the membrane flux is doubled, modeling damage to the membrane.
+    • Whenever 30 ≤ c_P ≤ 60 mol m⁻³, the permeate flux is doubled  
+      (identical to the legacy disturbance you liked).
+
+    Notes
+    -----
+    • Protein mass stays constant – only flux is affected.
+    • The implementation is numerically safe (avoids V = 0).
     """
 
-    def rhs(self, x, u, t):
+    def rhs(self, x: np.ndarray, u: float, t: float) -> np.ndarray:
+        # ---------------- unpack & guard against V→0 --------------------
         V, ML = x
-        cP = self.P.MP / max(V, 1e-6)
-        p = flux_permeate(cP, self.P) * (2.0 if 30.0 <= cP <= 60.0 else 1.0)  # apply flux boost
-        d = u * p
-        cL = ML / V
+        V_safe = max(V, 1e-9)                 # prevent division-by-zero
+        cP = self.P.MP / V_safe               # current protein conc.
+
+        # ---------------- tear-modified permeate flux -------------------
+        p_nom   = flux_permeate(cP, self.P)   # nominal flux
+        factor  = 2.0 if 30.0 <= cP <= 60.0 else 1.0
+        p       = p_nom * factor              # boosted flux in band
+
+        # ---------------- mass balances ---------------------------------
+        d  = u * p                            # solvent inflow
+        cL = ML / V_safe
         cL_p = lactose_permeate_conc(cL, p, self.P)
-        return np.array([d - p, -cL_p * p])
+
+        dV_dt  = d - p                       # volume change
+        dML_dt = -cL_p * p                   # lactose mass change
+
+        return np.array([dV_dt, dML_dt])
 
 
 class KmMismatch(Scenario):

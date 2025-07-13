@@ -1,5 +1,5 @@
 """
-src/core/params.py
+core/params.py
 ──────────────────
 Defines the process parameters and initial conditions for the diafiltration model.
 

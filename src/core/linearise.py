@@ -1,5 +1,5 @@
 """
-src/core/linearise.py
+core/linearise.py
 ─────────────────────
 Compute continuous-time Jacobian matrices A, B at a given operating point (x*, u*).
 

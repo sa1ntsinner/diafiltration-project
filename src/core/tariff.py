@@ -1,37 +1,42 @@
 """
-src/core/tariff.py
-──────────────────
-Defines a time-of-use (TOU) electricity pricing function for energy-aware MPC.
+core/tariff.py
+────────────────────────────────────────────────────────────────────────────
+Day-ahead spot-market electricity tariff for energy-aware MPC.
 
-The function returns a tariff (price per kWh) depending on the time elapsed
-since the start of the batch process.
-
-Used in the economic and energy-aware MPC modes.
+* One typical **weekday** price profile (24 values, €/kWh).
+* Linear interpolation gives a smooth €/kWh at any second t.
+* The function signature stays the same → controllers need *no* change.
 """
 
+from __future__ import annotations
 import numpy as np
 
-def lambda_tou(t: float) -> float:
+# 24-hour profile, EUR **per kWh**  (≈ 80–370 EUR/MWh)
+#             0h  1h  2h  3h  4h  5h  6h  7h  8h  9h 10h 11h
+_PRICE = np.array([0.09, 0.08, 0.08, 0.09, 0.10, 0.12,
+                   0.18, 0.25, 0.28, 0.30, 0.32, 0.35,
+#            12h 13h 14h 15h 16h 17h 18h 19h 20h 21h 22h 23h
+                   0.37, 0.34, 0.30, 0.26, 0.23, 0.20,
+                   0.18, 0.16, 0.14, 0.12, 0.10, 0.09])
+
+def lambda_tou(t_sec: float) -> float:             # ← same name, same units
     """
-    Returns the electricity price [€/kWh] at a given batch time t [seconds].
+    Continuous €/kWh tariff from a typical day-ahead spot curve.
 
-    Time-of-Use pricing:
-        - From  0 to 2 hours : 0.10 €/kWh  (off-peak)
-        - From 2 to 4 hours : 0.35 €/kWh  (peak pricing)
-        - From 4 to 6 hours : 0.10 €/kWh  (off-peak again)
+    Parameters
+    ----------
+    t_sec : float
+        Seconds since batch start (0 s = 0 h on the profile).
 
-    Parameters:
-        t : float
-            Time in seconds since the start of the process.
-
-    Returns:
-        float : Electricity price at time `t` [€/kWh].
+    Notes
+    -----
+    * For batches that run > 24 h we *wrap around* the profile.
+    * Hour-to-hour prices are **linearly interpolated** to avoid jumps
+      that could confuse gradient-based solvers in economic MPC.
     """
-    h = t / 3600  # Convert time from seconds to hours
-
-    if h < 2.0:
-        return 0.10  # Off-peak
-    elif h < 4.0:
-        return 0.35  # Peak time
-    else:
-        return 0.10  # Back to off-peak
+    # convert to fractional hour in [0, 24)
+    h = (t_sec / 3600.0) % 24.0
+    i = int(np.floor(h))            # index of the “left” hour
+    j = (i + 1) % 24                # index of the “right” hour (wrap)
+    θ = h - i                       # linear blend factor
+    return float((1.0 - θ) * _PRICE[i] + θ * _PRICE[j])

@@ -1,4 +1,6 @@
 """
+sim/simulate.py
+
 Generic closed-loop / open-loop simulator.
 
 Controller API

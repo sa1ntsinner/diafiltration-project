@@ -58,7 +58,6 @@ diafiltration-project/
 │   │   ├── simulate.py             # Core simulation loop (simulate())
 │   │   ├── scenarios.py            # Nominal, tear, mismatch, leakage etc.
 │
-├── .gitignore                      # Ignore cache, .env, IDEs, results
 ├── environment.yml                 # Conda environment with pinned packages
 ├── requirements.txt                # pip-compatible dependency list
 ├── README.md                       # Project documentation
