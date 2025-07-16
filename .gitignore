@@ -1,4 +1,4 @@
-# .gitignore
+.gitignore
 
 # byte-кэш и метаданные
 __pycache__/
