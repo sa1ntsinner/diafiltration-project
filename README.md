@@ -67,15 +67,22 @@ diafiltration-project/
 
 ## ✅ Features
 
-| ✅ | Module         | Description |
-|----|----------------|-------------|
-| ✔️ | `model.py`     | RK4 simulation of non-linear batch diafiltration |
-| ✔️ | `mpc.py`       | Time-optimal MPC with terminal constraints |
-| ✔️ | `simulator.py` | Unified open- and closed-loop simulator |
-| ✔️ | `views.py`     | Streamlit dashboard with 3 interactive tabs |
-| ✔️ | `tests.py`     | Evaluation under disturbances and uncertainties |
-| ✔️ | `tariff.py`    | Piecewise time-of-use electricity cost model |
-| ✔️ | `montecarlo.py`| Batch-wise robustness testing via random plant draws |
+| ✅ | Module / file | Description |
+|----|---------------|-------------|
+| ✔️ | **`app.py`** | Tiny Streamlit launcher – selects page from `views.py` |
+| ✔️ | **`views.py`** | Three interactive tabs: **Open-loop**, **MPC**, **Tests**; plotting helpers |
+| ✔️ | **`control/__init__.py`** | Public facade; exposes `mpc_robust()` convenience wrapper |
+| ✔️ | **`control/builder.py`** | Generic MPC factory (`build_mpc`) → spec, economic, time-optimal |
+| ✔️ | **`control/robust.py`** | Tube-tightened MPC: DLQR gain + lactose-constraint shrinking |
+| ✔️ | **`core/discretise.py`** | Symbolic & numeric RK-4 integrators (`rk4_disc`, `rk4_step`) |
+| ✔️ | **`core/dynamics.py`** | Non-linear diafiltration RHS, CasADi + NumPy versions |
+| ✔️ | **`core/linearise.py`** | Jacobian A,B around an operating point (for DLQR, robust MPC) |
+| ✔️ | **`core/params.py`** | Immutable `ProcessParams` dataclass (all constants & targets) |
+| ✔️ | **`core/tariff.py`** | Smooth €/kWh day-ahead price curve `lambda_tou(t)` |
+| ✔️ | **`experiments/montecarlo.py`** | Random plant draws → robustness histograms & pass-rate |
+| ✔️ | **`sim/__init__.py`** | Re-exports simulation helpers & scenario classes |
+| ✔️ | **`sim/simulate.py`** | Unified simulator (`simulate`) + quick MPC/heuristic factories |
+| ✔️ | **`sim/scenarios.py`** | Plant variants: Nominal, Tear, KmMismatch, ProteinLeakage |
 
 ---
 
