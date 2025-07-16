@@ -225,7 +225,7 @@ def show_mpc() -> None:
 
     # 1. Baseline MPC
     st.markdown("---"); st.markdown("### 1. Baseline MPC")
-    N = st.slider("Prediction horizon N", 5, 50, 5)
+    N = st.slider("Prediction horizon N", 5, 50, 20)
     t_b, V_b, ML_b, u_b = simulate(spec_controller(N), Nominal(P))
     cP_b, cL_b = P.MP / V_b, ML_b / V_b
     plot_charts("Baseline MPC", t_b, cP_b, cL_b, u_b)
@@ -240,16 +240,16 @@ def show_mpc() -> None:
 
     # 3. Time-optimal MPC
     st.markdown("---"); st.markdown("### 3. Time-optimal MPC")
-    N_opt = st.slider("Horizon (time-opt.)", 5, 50, 5, key="topth")
+    N_opt = st.slider("Horizon (time-opt.)", 5, 50, 20, key="topth")
     t_to, V_to, ML_to, u_to = simulate(mpc_time_opt(N_opt), Nominal(P))
     cP_to, cL_to = P.MP / V_to, ML_to / V_to
     plot_charts("Time-optimal MPC", t_to, cP_to, cL_to, u_to)
     st.success(f"🏁 Time-opt batch **{batch_time(t_to, cP_to, cL_to):.2f} h**  "
-               f"vs Threshold **{batch_time(t_th, cP_th, cL_th):.2f} h**")
+               f"vs Tracking-MPC **{batch_time(t_b,  cP_b,  cL_b ):.2f} h** ")
 
     # 4. Economic MPC with tariff cost analysis
     st.markdown("---"); st.markdown("### 4. Economic MPC (time-of-use tariff)")
-    N_econ = st.slider("Horizon (economic)", 5, 50, 5, key="econ")
+    N_econ = st.slider("Horizon (economic)", 5, 50, 20, key="econ")
     t_e, V_e, ML_e, u_e = simulate(econ_controller(N_econ), Nominal(P))
     cP_e, cL_e = P.MP / V_e, ML_e / V_e
     plot_charts("Economic MPC", t_e, cP_e, cL_e, u_e)
