@@ -32,7 +32,8 @@ All simulations are dynamic and interactive.
 ```text
 diafiltration-project/
 ├── assets/
-│   └── tank_image.png              # Sidebar image for Streamlit
+│   ├── tank_image.png              # Sidebar image for Streamlit
+│   └── P2_Diafiltration.pdf        # Project Description and tasks
 │
 ├── src/
 │   ├── app.py                      # Streamlit entrypoint with sidebar & routing
