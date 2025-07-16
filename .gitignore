@@ -4,15 +4,39 @@
 __pycache__/
 *.py[cod]
 *.so
-# IDE
+
+# IDE settings
 .vscode/
 .idea/
-# окружения
+
+# Python environments
 .env/
 .venv/
-# Jupyter-сессии
+env/
+venv/
+
+# Jupyter notebooks
 .ipynb_checkpoints/
-# артефакты
-*.png
-*.pdf
+
+# Simulation and result artifacts
+*.csv
+*.log
+*.mp4
 results/
+output/
+exports/
+
+# Streamlit cache (can be large)
+.streamlit/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Project build artifacts (if packaging or compiling)
+build/
+dist/
+*.egg-info/
+
+# VSCode dev containers
+.devcontainer/
