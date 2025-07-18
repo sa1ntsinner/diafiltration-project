@@ -28,16 +28,8 @@ All simulations are dynamic and interactive.
 
 ---
 
-## 🎥 Explanatory Presentation
+## [🎥 Explanatory Presentation](https://www.canva.com/design/DAGsXmx7f6E/2OqagYhtxAp9rsltLK9new/view)
 
-<p align="left">
-  <a href="https://www.canva.com/design/DAGsXmx7f6E/2OqagYhtxAp9rsltLK9new/view">
-    <!-- static thumbnail exported from Canva (1024 × 576 jpg/png) -->
-    <img src="assets/Canva_Logo.svg"
-         alt="Click to open the full presentation"
-         width="720" />
-  </a>
-</p>
 
 ---
 ## 📂 Project Structure
