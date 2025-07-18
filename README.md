@@ -28,6 +28,35 @@ All simulations are dynamic and interactive.
 
 ---
 
+## 🎥 Slide-deck • *Diafiltration-MPC project*
+
+<p align="center">
+  <a href="https://www.canva.com/design/DAGsXmx7f6E/2OqagYhtxAp9rsltLK9new/view">
+    <!-- static thumbnail exported from Canva (1024 × 576 jpg/png) -->
+    <img src="assets/presentation_thumb.jpg"
+         alt="Click to open the full presentation"
+         width="720" />
+  </a>
+</p>
+
+| ▶ | **Interactive slides** | **Duration** |
+|---|------------------------|--------------|
+| ✅ | <a href="https://www.canva.com/design/DAGsXmx7f6E/2OqagYhtxAp9rsltLK9new/view">Open in browser ↗</a> | ~2 min walk-through |
+
+<details>
+<summary>What you’ll see (quick outline)</summary>
+
+1. **Open-loop behaviour** – constant valve settings  
+2. **Spec-tracking MPC** – horizon sensitivity  
+3. **Time-optimal MPC** – fastest feasible batch  
+4. **Economic MPC** – energy-aware cost reduction  
+5. **Robust MPC** – fault tolerance (filter-cake tear)  
+
+</details>
+
+*Tip:* Use the **full-screen button** inside Canva (bottom-right) for the best viewing experience.
+
+---
 ## 📂 Project Structure
 ```text
 diafiltration-project/
