@@ -225,7 +225,7 @@ def show_mpc() -> None:
 
     # 1.1. Tracking MPC
     st.markdown("---"); st.markdown("### 1.1. Tracking MPC")
-    N = st.slider("Prediction horizon N", 1, 50, 20)
+    N = st.slider("Prediction horizon N", 5, 50, 20)
     t_b, V_b, ML_b, u_b = simulate(spec_controller(N), Nominal(P))
     cP_b, cL_b = P.MP / V_b, ML_b / V_b
     plot_charts("Tracking MPC", t_b, cP_b, cL_b, u_b)

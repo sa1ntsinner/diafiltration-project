@@ -160,10 +160,10 @@ def build_mpc(
             # • quadratic slack tracking
             sL = ca.fmax(cL_k - params.cL_star, 0)
             sP = ca.fmax(params.cP_star - cP_k, 0)
-            J += w["rho_spec"] * (sL**2 + sP**2)
-            J += w["rho_time"] * params.dt_ctrl
-            J += w["rho_u_spec"] * (1 - U[k])**2
-            J += w["rho_V"] * V_k * params.dt_ctrl
+            J += (sL**2 + sP**2)
+            # J += w["rho_time"] * params.dt_ctrl
+            # J += w["rho_u_spec"] * (1 - U[k])**2
+            # J += w["rho_V"] * V_k * params.dt_ctrl
 
         elif mode == "econ":
             # • linear “economic” formulation (no squares)
