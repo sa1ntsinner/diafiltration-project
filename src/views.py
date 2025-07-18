@@ -223,13 +223,67 @@ def show_mpc() -> None:
     """Main visualization page for different MPC strategies."""
     st.markdown("## Closed-loop MPC simulation")
 
-    # 1. Baseline MPC
-    st.markdown("---"); st.markdown("### 1. Baseline MPC")
-    N = st.slider("Prediction horizon N", 5, 50, 20)
+    # 1.1. Tracking MPC
+    st.markdown("---"); st.markdown("### 1.1. Tracking MPC")
+    N = st.slider("Prediction horizon N", 1, 50, 20)
     t_b, V_b, ML_b, u_b = simulate(spec_controller(N), Nominal(P))
     cP_b, cL_b = P.MP / V_b, ML_b / V_b
-    plot_charts("Baseline MPC", t_b, cP_b, cL_b, u_b)
+    plot_charts("Tracking MPC", t_b, cP_b, cL_b, u_b)
     st.info(f"⏱️ Batch time **{batch_time(t_b, cP_b, cL_b):.2f} h**")
+
+    # 1.2. Tracking MPC fixed N
+    st.markdown("---"); st.markdown("### 1.2. Tracking MPC (N=5,20,50)")
+
+    data ={}
+    Ns = [5, 20, 50]
+    for n in Ns:
+        t_b, V_b, ML_b, u_b = simulate(spec_controller(n), Nominal(P))
+        cP_b, cL_b = P.MP / V_b, ML_b / V_b
+        data[f't_n{n}'] = t_b / 3600.0
+        data[f'cP_n{n}'] = cP_b
+        data[f'cL_n{n}'] = cL_b
+        data[f'u_n{n}'] = u_b
+
+    # # Define colors and labels for each N
+    colors = ['tab:blue', 'tab:orange', 'tab:green']
+
+    col_cP, col_cL, col_u = st.columns(3, gap="small")
+
+    # Panel 1 – Protein concentration
+    fig, ax = plt.subplots(figsize=(4, 3))
+    for i, n in enumerate(Ns):
+        ax.plot(data[f't_n{n}'], data[f'cP_n{n}'], label=f'N={n}', color=colors[i])
+    ax.axhline(P.cP_star, ls="--", color="grey", label="cP target 100")
+    ax.set_ylabel("Protein cP  [mol m⁻³]")
+    ax.set_xlabel("Time [h]")
+    ax.legend(loc="best")
+    col_cP.pyplot(fig, use_container_width=True)
+
+    # Panel 2 – Lactose concentration
+    fig, ax = plt.subplots(figsize=(4, 3))
+    for i, n in enumerate(Ns):
+        ax.plot(data[f't_n{n}'], data[f'cL_n{n}'], label=f'N={n}', color=colors[i])
+    ax.axhline(P.cL_star, ls="--", color="grey", label="cL target 15")
+    ax.axhline(P.cL_max, ls=":", color="r", label="cL max 570")
+    ax.set_ylabel("Lactose cL  [mol m⁻³]")
+    ax.set_xlabel("Time [h]")
+    ax.legend(loc="best")
+    col_cL.pyplot(fig, use_container_width=True)
+
+    # Panel 3 – Control trajectory
+    fig, ax = plt.subplots(figsize=(4, 3))
+    for i, n in enumerate(Ns):
+        t = data[f't_n{n}']
+        u = data[f'u_n{n}']
+        min_len = min(len(t), len(u))
+        ax.step(t[:min_len], u[:min_len], label=f'N={n}', where='post', color=colors[i])
+    ax.set_ylabel("Control u")
+    ax.set_xlabel("Time [h]")
+    ax.legend(loc="best")
+    col_u.pyplot(fig, use_container_width=True)
+
+    for n in Ns:
+        st.info(f"⏱️ Batch time of Tracking MPC with N={n}: **{batch_time(data[f't_n{n}']*3600.0, data[f'cP_n{n}'], data[f'cL_n{n}']):.2f} h**")
 
     # 2. Threshold policy comparison
     st.markdown("---"); st.markdown("### 2. Threshold policy ($u=0.86$ if $c_P\\ge55$)")
@@ -248,7 +302,7 @@ def show_mpc() -> None:
                f"vs Tracking-MPC **{batch_time(t_b,  cP_b,  cL_b ):.2f} h** ")
 
     # 4. Economic MPC with tariff cost analysis
-    st.markdown("---"); st.markdown("### 4. Economic MPC (time-of-use tariff)")
+    st.markdown("---"); st.markdown("### 4. Economic MPC")
     N_econ = st.slider("Horizon (economic)", 5, 50, 20, key="econ")
     t_e, V_e, ML_e, u_e = simulate(econ_controller(N_econ), Nominal(P))
     cP_e, cL_e = P.MP / V_e, ML_e / V_e
@@ -268,21 +322,21 @@ def show_mpc() -> None:
 
 def show_tests() -> None:
     """Simulate MPC robustness across faulty or perturbed plants."""
-    st.markdown("## Test scenarios")
+    st.markdown("## Test scenarios on best MPC")
 
     # 1. Filter-cake tear scenario
     st.subheader("1. Filter-cake tear disturbance")
-    t, V, ML, u = simulate(spec_controller(5), Tear(P))
+    t, V, ML, u = simulate(econ_controller(20), Tear(P))
     plot_charts("Tear disturbance", t, P.MP / V, ML / V, u, highlight_tear=True)
 
     # 2. Plant-model mismatch scenario
-    st.subheader("2. Plant-model mismatch (robust MPC)")
+    st.subheader("2. Plant-model mismatch")
     tol = 1e-3
     summary = []
 
     for factor in [0.75, 0.5, 0.25]:
         scen = KmMismatch(factor, P)
-        t, V, ML, u = simulate(mpc_robust(5), scen)
+        t, V, ML, u = simulate(econ_controller(20), scen)
         plot_charts(f"Mismatch factor {factor}", t, P.MP / V, ML / V, u)
 
         cP = P.MP / V
@@ -313,9 +367,9 @@ def show_tests() -> None:
         col.info(f"factor {factor}: {msg}")
 
     # 3. Protein leakage scenario
-    st.subheader("3. Protein leakage (β = 1.3)")
+    st.subheader("3. Protein leakage")
     scen = ProteinLeakage()
-    t, V, ML, u = simulate(spec_controller(5), scen)
+    t, V, ML, u = simulate(econ_controller(20), scen)
     plot_charts("Protein leakage", t, P.MP / V, ML / V, u)
 
     # 4. Monte-Carlo robustness test
