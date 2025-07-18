@@ -12,14 +12,14 @@ dependencies:
   - casadi=3.7.0
   - scipy
   - streamlit
-  - pytest
+  # - pytest
 
   # Recommended additions
-  - pandas        # useful for future data analysis or Monte Carlo result handling
-  - jupyterlab    # optional, for experimentation / prototyping in notebooks
-  - ipykernel     # ensures Jupyter kernel support
-  - seaborn       # optional, nicer plots in tests/debugging
-  - pip           # to allow pip-installed packages
-  - pip:
-      - black     # optional, for code formatting
-      - streamlit-toggle-switch  # optional UI improvement (if used)
+  # - pandas        # useful for future data analysis or Monte Carlo result handling
+  # - jupyterlab    # optional, for experimentation / prototyping in notebooks
+  # - ipykernel     # ensures Jupyter kernel support
+  # - seaborn       # optional, nicer plots in tests/debugging
+  # - pip           # to allow pip-installed packages
+  # - pip:
+  #     - black     # optional, for code formatting
+  #     - streamlit-toggle-switch  # optional UI improvement (if used)
