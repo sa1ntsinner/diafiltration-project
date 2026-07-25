@@ -1,0 +1,1703 @@
+{
+  "quick": false,
+  "studies": {
+    "model": {
+      "title": "Model and structure of the time-optimal solution",
+      "figures": [
+        "docs/figures/fig01_process_schematic.png",
+        "docs/figures/fig01_process_schematic.pdf",
+        "docs/figures/fig02_switching_price.png",
+        "docs/figures/fig02_switching_price.pdf",
+        "docs/figures/fig03_tariff.png",
+        "docs/figures/fig03_tariff.pdf"
+      ],
+      "states": [
+        "V [m^3]",
+        "M_L [mol]",
+        "M_P [mol]"
+      ],
+      "linear": false,
+      "nonlinearity_sources": [
+        "ln(cg*V/M_P) in the flux",
+        "exp(p/(kM*A)) in the partition ratio",
+        "bilinear inflow d = u*p(V)"
+      ],
+      "analytic_optimum": {
+        "T_h": 3.54346,
+        "t_switch_h": 2.04413,
+        "cL_switch": 231.591,
+        "cL_peak": 231.591,
+        "bang_bang_optimal": true
+      },
+      "numerical_ocp_T_h": 3.54347,
+      "analytic_vs_ocp_rel_error": 4.769383779614081e-06,
+      "washing_price_min_at_cP": 100.0,
+      "cL_peak_of_optimum": 231.6,
+      "cL_max": 570.0,
+      "crystallisation_limit_active": false,
+      "integrator": {
+        "test": "one step of 3600 s at u = 0.3",
+        "rk4_relative_error": {
+          "1": "4.613e-05",
+          "2": "2.909e-06",
+          "4": "1.793e-07",
+          "8": "1.107e-08",
+          "16": "6.871e-10",
+          "32": "4.277e-11"
+        },
+        "observed_order": 4.01,
+        "cvodes_vs_rk4_4096_rel": "1.030e-10",
+        "mpc_sub_steps": 4,
+        "plant_sub_steps": 120
+      },
+      "wall_time_s": 3.1
+    },
+    "open_loop": {
+      "title": "Open-loop operation with constant u",
+      "figures": [
+        "docs/figures/fig04_open_loop.png",
+        "docs/figures/fig04_open_loop.pdf",
+        "docs/figures/fig05_open_loop_table.png",
+        "docs/figures/fig05_open_loop_table.pdf",
+        "docs/figures/fig05b_open_loop_sweep.png",
+        "docs/figures/fig05b_open_loop_sweep.pdf"
+      ],
+      "runs": [
+        {
+          "u": 0.0,
+          "cP_end": 319.0,
+          "cL_end": 243.3,
+          "V_end_L": 3.13,
+          "t_cP_spec_h": 2.167,
+          "t_cL_spec_h": null,
+          "both_specs_within_6h": false
+        },
+        {
+          "u": 0.4,
+          "cP_end": 318.65,
+          "cL_end": 33.42,
+          "V_end_L": 3.14,
+          "t_cP_spec_h": 3.5,
+          "t_cL_spec_h": null,
+          "both_specs_within_6h": false
+        },
+        {
+          "u": 0.5,
+          "cP_end": 309.81,
+          "cL_end": 12.74,
+          "V_end_L": 3.23,
+          "t_cP_spec_h": 4.167,
+          "t_cL_spec_h": 5.333,
+          "both_specs_within_6h": true
+        },
+        {
+          "u": 0.6,
+          "cP_end": 198.18,
+          "cL_end": 5.58,
+          "V_end_L": 5.05,
+          "t_cP_spec_h": 5.167,
+          "t_cL_spec_h": 5.167,
+          "both_specs_within_6h": true
+        },
+        {
+          "u": 0.7,
+          "cP_end": 62.98,
+          "cL_end": 7.39,
+          "V_end_L": 15.88,
+          "t_cP_spec_h": null,
+          "t_cL_spec_h": 5.333,
+          "both_specs_within_6h": false
+        },
+        {
+          "u": 0.86,
+          "cP_end": 18.52,
+          "cL_end": 10.99,
+          "V_end_L": 54.0,
+          "t_cP_spec_h": null,
+          "t_cL_spec_h": 5.5,
+          "both_specs_within_6h": false
+        },
+        {
+          "u": 1.0,
+          "cP_end": 10.0,
+          "cL_end": 12.03,
+          "V_end_L": 100.0,
+          "t_cP_spec_h": null,
+          "t_cL_spec_h": 5.5,
+          "both_specs_within_6h": false
+        }
+      ],
+      "constant_u_sweep": [
+        {
+          "u": 0.5,
+          "finished": true,
+          "batch_time_h": 5.245,
+          "cP_overshoot": 162.36,
+          "on_spec": false
+        },
+        {
+          "u": 0.505,
+          "finished": true,
+          "batch_time_h": 5.1807,
+          "cP_overshoot": 147.85,
+          "on_spec": false
+        },
+        {
+          "u": 0.51,
+          "finished": true,
+          "batch_time_h": 5.1349,
+          "cP_overshoot": 134.3,
+          "on_spec": false
+        },
+        {
+          "u": 0.515,
+          "finished": true,
+          "batch_time_h": 5.101,
+          "cP_overshoot": 121.64,
+          "on_spec": false
+        },
+        {
+          "u": 0.52,
+          "finished": true,
+          "batch_time_h": 5.0755,
+          "cP_overshoot": 109.8,
+          "on_spec": false
+        },
+        {
+          "u": 0.525,
+          "finished": true,
+          "batch_time_h": 5.0563,
+          "cP_overshoot": 98.73,
+          "on_spec": false
+        },
+        {
+          "u": 0.53,
+          "finished": true,
+          "batch_time_h": 5.0417,
+          "cP_overshoot": 88.37,
+          "on_spec": false
+        },
+        {
+          "u": 0.535,
+          "finished": true,
+          "batch_time_h": 5.0309,
+          "cP_overshoot": 78.66,
+          "on_spec": false
+        },
+        {
+          "u": 0.54,
+          "finished": true,
+          "batch_time_h": 5.0231,
+          "cP_overshoot": 69.56,
+          "on_spec": false
+        },
+        {
+          "u": 0.545,
+          "finished": true,
+          "batch_time_h": 5.0177,
+          "cP_overshoot": 61.03,
+          "on_spec": false
+        },
+        {
+          "u": 0.55,
+          "finished": true,
+          "batch_time_h": 5.0144,
+          "cP_overshoot": 53.03,
+          "on_spec": false
+        },
+        {
+          "u": 0.555,
+          "finished": true,
+          "batch_time_h": 5.0128,
+          "cP_overshoot": 45.51,
+          "on_spec": false
+        },
+        {
+          "u": 0.56,
+          "finished": true,
+          "batch_time_h": 5.0127,
+          "cP_overshoot": 38.45,
+          "on_spec": false
+        },
+        {
+          "u": 0.565,
+          "finished": true,
+          "batch_time_h": 5.0139,
+          "cP_overshoot": 31.81,
+          "on_spec": false
+        },
+        {
+          "u": 0.57,
+          "finished": true,
+          "batch_time_h": 5.0162,
+          "cP_overshoot": 25.56,
+          "on_spec": false
+        },
+        {
+          "u": 0.575,
+          "finished": true,
+          "batch_time_h": 5.0194,
+          "cP_overshoot": 19.68,
+          "on_spec": false
+        },
+        {
+          "u": 0.58,
+          "finished": true,
+          "batch_time_h": 5.0234,
+          "cP_overshoot": 14.15,
+          "on_spec": false
+        },
+        {
+          "u": 0.585,
+          "finished": true,
+          "batch_time_h": 5.0281,
+          "cP_overshoot": 8.93,
+          "on_spec": false
+        },
+        {
+          "u": 0.59,
+          "finished": true,
+          "batch_time_h": 5.0335,
+          "cP_overshoot": 4.01,
+          "on_spec": false
+        },
+        {
+          "u": 0.595,
+          "finished": true,
+          "batch_time_h": 5.0471,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.6,
+          "finished": true,
+          "batch_time_h": 5.1102,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.605,
+          "finished": true,
+          "batch_time_h": 5.1749,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.61,
+          "finished": true,
+          "batch_time_h": 5.2412,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.615,
+          "finished": true,
+          "batch_time_h": 5.3093,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.62,
+          "finished": true,
+          "batch_time_h": 5.3791,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.625,
+          "finished": true,
+          "batch_time_h": 5.4509,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.63,
+          "finished": true,
+          "batch_time_h": 5.5245,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.635,
+          "finished": true,
+          "batch_time_h": 5.6002,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.64,
+          "finished": true,
+          "batch_time_h": 5.678,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.645,
+          "finished": true,
+          "batch_time_h": 5.758,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.65,
+          "finished": true,
+          "batch_time_h": 5.8402,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.655,
+          "finished": true,
+          "batch_time_h": 5.9249,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        {
+          "u": 0.66,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.665,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.67,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.675,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.68,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.685,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.69,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.695,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.7,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.705,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.71,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.715,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.72,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.725,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.73,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.735,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.74,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.745,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        },
+        {
+          "u": 0.75,
+          "finished": false,
+          "batch_time_h": null,
+          "cP_overshoot": 0.0,
+          "on_spec": false
+        }
+      ],
+      "best_constant_u": {
+        "u": 0.595,
+        "finished": true,
+        "batch_time_h": 5.0471,
+        "cP_overshoot": 0.0,
+        "on_spec": true
+      },
+      "analytic_optimum_T_h": 3.5435,
+      "penalty_of_constant_u_%": 42.4,
+      "on_spec_window_u": [
+        0.595,
+        0.655
+      ],
+      "conclusion": "A constant input can satisfy both specifications, but only inside the narrow window u in [0.595, 0.655]: below it the batch over-concentrates far past cP,f before the lactose target is reached, above it the protein target is never reached within 6 h. The best constant input needs 5.047 h at u = 0.595, i.e. 42 % longer than the time-optimal control, because a single value of u has to trade concentration against washing at *every* instant. Optimisation helps precisely because that trade-off is time-varying: the process should first concentrate (u = 0; washing is inefficient at low cP) and only then wash (u = 1; washing is ~4x more effective at cP = 100).",
+      "wall_time_s": 5.3
+    },
+    "tracking": {
+      "title": "Quadratic tracking objective and prediction horizon",
+      "figures": [
+        "docs/figures/fig06_tracking_horizons.png",
+        "docs/figures/fig06_tracking_horizons.pdf",
+        "docs/figures/fig07_tracking_vs_policy.png",
+        "docs/figures/fig07_tracking_vs_policy.pdf",
+        "docs/figures/fig08_tracking_table.png",
+        "docs/figures/fig08_tracking_table.pdf"
+      ],
+      "horizon_study": {
+        "5": {
+          "batch_time_h": null,
+          "finished": false,
+          "cP_final": 50.33,
+          "cL_final": 34.57,
+          "samples_with_active_terminal_slack": 36,
+          "mean_solve_ms": 2.9
+        },
+        "20": {
+          "batch_time_h": 4.9977,
+          "finished": true,
+          "cP_final": 99.99,
+          "cL_final": 13.14,
+          "samples_with_active_terminal_slack": 9,
+          "mean_solve_ms": 13.2
+        },
+        "50": {
+          "batch_time_h": 5.16,
+          "finished": true,
+          "cP_final": 99.99,
+          "cL_final": 11.2,
+          "samples_with_active_terminal_slack": 0,
+          "mean_solve_ms": 38.6
+        }
+      },
+      "eq3_only_no_terminal_constraint": {
+        "label": "tracking MPC N=20, Eq. (3) only",
+        "finished": true,
+        "batch_time_h": 5.159,
+        "cP_final": 99.99,
+        "cL_final": 11.063,
+        "cL_peak": 150.0,
+        "cL_violation": 0.0,
+        "cP_overshoot": 0.0,
+        "spec_ok": true,
+        "t_cP_spec_h": 5.159,
+        "t_cL_spec_h": 5.0,
+        "V_final_L": 10.001,
+        "diavolumes": 1.369,
+        "protein_recovery": 1.0,
+        "energy_kWh": 10.367,
+        "cost_EUR": 0.96,
+        "mean_solve_ms": 12.3,
+        "solver_failures": 0
+      },
+      "threshold_policy": {
+        "label": "threshold policy (cP*=55, u=0.86)",
+        "finished": true,
+        "batch_time_h": 3.6717,
+        "cP_final": 109.82,
+        "cL_final": 15.001,
+        "cL_peak": 222.08,
+        "cL_violation": 0.0,
+        "cP_overshoot": 9.82,
+        "spec_ok": false,
+        "t_cP_spec_h": 3.5,
+        "t_cL_spec_h": 3.6717,
+        "V_final_L": 9.106,
+        "diavolumes": 0.366,
+        "protein_recovery": 1.0,
+        "energy_kWh": 5.788,
+        "cost_EUR": 0.501,
+        "mean_solve_ms": 0.0,
+        "solver_failures": 0
+      },
+      "analytic_optimum_T_h": 3.5435,
+      "why_eq3_is_unsuited": [
+        "It is a *tracking* cost: every sample away from the set point is penalised, so the optimiser buys early lactose reduction with late protein concentration instead of finishing early.",
+        "Both terms are unscaled: the lactose gap (135 mol/m^3) enters squared, the protein gap (90 mol/m^3) as well, but the lactose term can be reduced immediately by washing at u=1, which *blocks* concentration. The first hour is therefore spent washing at cP = 10 mol/m^3, where washing is ~4x less effective than at cP = 100 mol/m^3.",
+        "A quadratic penalty vanishes to second order near the target, so 'finish one sample earlier' is almost free - the cost cannot express time optimality.",
+        "With N = 5 the terminal specification is unreachable inside the horizon; the controller becomes purely myopic and never finishes within 6 h (an unguarded implementation instead returns an infeasible IPOPT point and applies it silently)."
+      ],
+      "wall_time_s": 5.6
+    },
+    "objectives": {
+      "title": "Objective functions that express time optimality",
+      "figures": [
+        "docs/figures/fig09_objectives.png",
+        "docs/figures/fig09_objectives.pdf",
+        "docs/figures/fig10_objective_table.png",
+        "docs/figures/fig10_objective_table.pdf",
+        "docs/figures/fig11_min_time_horizons.png",
+        "docs/figures/fig11_min_time_horizons.pdf"
+      ],
+      "objectives": {
+        "tracking": {
+          "label": "quadratic tracking, Eq. (3)",
+          "finished": true,
+          "batch_time_h": 4.9977,
+          "cP_final": 99.99,
+          "cL_final": 13.139,
+          "cL_peak": 150.0,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 4.9977,
+          "t_cL_spec_h": 4.9977,
+          "V_final_L": 10.001,
+          "diavolumes": 1.297,
+          "protein_recovery": 1.0,
+          "energy_kWh": 9.883,
+          "cost_EUR": 0.902,
+          "mean_solve_ms": 14.2,
+          "solver_failures": 0,
+          "gap_to_optimum_%": 41.04
+        },
+        "tracking_scaled": {
+          "label": "scaled quadratic tracking",
+          "finished": true,
+          "batch_time_h": 4.3032,
+          "cP_final": 99.99,
+          "cL_final": 10.991,
+          "cL_peak": 168.04,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 4.3032,
+          "t_cL_spec_h": 4.1667,
+          "V_final_L": 10.001,
+          "diavolumes": 0.745,
+          "protein_recovery": 1.0,
+          "energy_kWh": 7.799,
+          "cost_EUR": 0.693,
+          "mean_solve_ms": 14.9,
+          "solver_failures": 0,
+          "gap_to_optimum_%": 21.44
+        },
+        "l1_time": {
+          "label": "$\\ell_1$ time-weighted distance",
+          "finished": true,
+          "batch_time_h": 3.5547,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 216.15,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5547,
+          "V_final_L": 10.0,
+          "diavolumes": 0.311,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.554,
+          "cost_EUR": 0.481,
+          "mean_solve_ms": 19.7,
+          "solver_failures": 0,
+          "gap_to_optimum_%": 0.32
+        },
+        "min_time": {
+          "label": "free-final-time (min $T$)",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 10.0,
+          "diavolumes": 0.302,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 13.7,
+          "solver_failures": 0,
+          "gap_to_optimum_%": 0.04
+        },
+        "threshold_policy": {
+          "label": "threshold policy (cP*=55, u=0.86)",
+          "finished": true,
+          "batch_time_h": 3.6717,
+          "cP_final": 109.82,
+          "cL_final": 15.001,
+          "cL_peak": 222.08,
+          "cL_violation": 0.0,
+          "cP_overshoot": 9.82,
+          "spec_ok": false,
+          "t_cP_spec_h": 3.5,
+          "t_cL_spec_h": 3.6717,
+          "V_final_L": 9.106,
+          "diavolumes": 0.366,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.788,
+          "cost_EUR": 0.501,
+          "mean_solve_ms": 0.0,
+          "solver_failures": 0,
+          "gap_to_optimum_%": 3.62
+        }
+      },
+      "analytic_optimum_T_h": 3.5435,
+      "min_time_horizon_independence": {
+        "5": 3.5447,
+        "10": 3.5447,
+        "20": 3.5447,
+        "50": 3.5447
+      },
+      "resolution": "Replacing the quadratic tracking cost by (i) an l1 cost on the remaining distance integrated over time, or (ii) the batch time itself with the specification as a hard terminal constraint, makes 'finish earlier' strictly cheaper. Both reproduce the analytic bang-bang optimum; the free-final-time formulation additionally removes the horizon sensitivity, because the horizon covers the whole remaining batch by construction.",
+      "wall_time_s": 8.1
+    },
+    "tear": {
+      "title": "Filter-cake tear (structural, transient disturbance)",
+      "figures": [
+        "docs/figures/fig12_tear.png",
+        "docs/figures/fig12_tear.pdf",
+        "docs/figures/fig13_tear_table.png",
+        "docs/figures/fig13_tear_table.pdf"
+      ],
+      "tear_window_h": [
+        1.3333333333333333,
+        1.5
+      ],
+      "mpc": {
+        "label": "min-time MPC N=20",
+        "finished": true,
+        "batch_time_h": 3.3794,
+        "cP_final": 100.0,
+        "cL_final": 15.001,
+        "cL_peak": 257.32,
+        "cL_violation": 0.0,
+        "cP_overshoot": 0.0,
+        "spec_ok": true,
+        "t_cP_spec_h": 1.8333,
+        "t_cL_spec_h": 3.3794,
+        "V_final_L": 10.0,
+        "diavolumes": 0.316,
+        "protein_recovery": 1.0,
+        "energy_kWh": 5.622,
+        "cost_EUR": 0.479,
+        "mean_solve_ms": 15.0,
+        "solver_failures": 0
+      },
+      "policy": {
+        "label": "threshold policy (cP*=55, u=0.86)",
+        "finished": true,
+        "batch_time_h": 3.5283,
+        "cP_final": 127.564,
+        "cL_final": 15.001,
+        "cL_peak": 257.32,
+        "cL_violation": 0.0,
+        "cP_overshoot": 27.564,
+        "spec_ok": false,
+        "t_cP_spec_h": 2.6667,
+        "t_cL_spec_h": 3.5283,
+        "V_final_L": 7.839,
+        "diavolumes": 0.331,
+        "protein_recovery": 1.0,
+        "energy_kWh": 5.767,
+        "cost_EUR": 0.492,
+        "mean_solve_ms": 0.0,
+        "solver_failures": 0
+      },
+      "mpc_without_tear": {
+        "label": "min-time MPC, no tear",
+        "finished": true,
+        "batch_time_h": 3.5447,
+        "cP_final": 100.0,
+        "cL_final": 15.001,
+        "cL_peak": 229.75,
+        "cL_violation": 0.0,
+        "cP_overshoot": 0.0,
+        "spec_ok": true,
+        "t_cP_spec_h": 2.1667,
+        "t_cL_spec_h": 3.5447,
+        "V_final_L": 10.0,
+        "diavolumes": 0.302,
+        "protein_recovery": 1.0,
+        "energy_kWh": 5.524,
+        "cost_EUR": 0.478,
+        "mean_solve_ms": 12.3,
+        "solver_failures": 0
+      },
+      "discussion": "The doubled permeate flow is *useful*: it concentrates the batch faster, so the MPC finishes in 3.379 h instead of 3.545 h. The MPC exploits the disturbance while keeping cP exactly on its set point, because it re-optimises from the measured state at every sample. The fixed policy of Eq. (4) has no such feedback on the *target*: it over-concentrates to 127.6 mol/m^3 (28 % above specification), i.e. the batch is off spec and the product would have to be re-diluted.",
+      "wall_time_s": 2.8
+    },
+    "mismatch": {
+      "title": "Parametric plant-model mismatch in kM_L",
+      "figures": [
+        "docs/figures/fig14_mismatch_0p75.png",
+        "docs/figures/fig14_mismatch_0p75.pdf",
+        "docs/figures/fig14_mismatch_0p5.png",
+        "docs/figures/fig14_mismatch_0p5.pdf",
+        "docs/figures/fig14_mismatch_0p25.png",
+        "docs/figures/fig14_mismatch_0p25.pdf",
+        "docs/figures/fig15_mismatch_table.png",
+        "docs/figures/fig15_mismatch_table.pdf",
+        "docs/figures/fig16_identification.png",
+        "docs/figures/fig16_identification.pdf"
+      ],
+      "results": {
+        "0.75": {
+          "nominal model": {
+            "label": "nominal-model MPC",
+            "finished": true,
+            "batch_time_h": 3.694,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 270.42,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 3.694,
+            "V_final_L": 10.0,
+            "diavolumes": 0.332,
+            "protein_recovery": 1.0,
+            "energy_kWh": 5.972,
+            "cost_EUR": 0.521,
+            "mean_solve_ms": 15.8,
+            "solver_failures": 0
+          },
+          "perfect model": {
+            "label": "perfect-model MPC",
+            "finished": true,
+            "batch_time_h": 3.694,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 270.42,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 3.694,
+            "V_final_L": 10.0,
+            "diavolumes": 0.332,
+            "protein_recovery": 1.0,
+            "energy_kWh": 5.972,
+            "cost_EUR": 0.521,
+            "mean_solve_ms": 16.4,
+            "solver_failures": 0
+          },
+          "back-off (\u2212200)": {
+            "label": "back-off MPC (\u2212200)",
+            "finished": true,
+            "batch_time_h": 3.694,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 270.42,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 3.694,
+            "V_final_L": 10.0,
+            "diavolumes": 0.332,
+            "protein_recovery": 1.0,
+            "energy_kWh": 5.972,
+            "cost_EUR": 0.521,
+            "mean_solve_ms": 16.0,
+            "solver_failures": 0
+          },
+          "multi-stage": {
+            "label": "multi-stage NMPC",
+            "finished": true,
+            "batch_time_h": 3.694,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 270.42,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 3.694,
+            "V_final_L": 10.0,
+            "diavolumes": 0.332,
+            "protein_recovery": 1.0,
+            "energy_kWh": 5.972,
+            "cost_EUR": 0.521,
+            "mean_solve_ms": 154.1,
+            "solver_failures": 0
+          },
+          "adaptive (MHE)": {
+            "label": "adaptive NMPC (MHE)",
+            "finished": true,
+            "batch_time_h": 3.694,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 270.42,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 3.694,
+            "V_final_L": 10.0,
+            "diavolumes": 0.332,
+            "protein_recovery": 1.0,
+            "energy_kWh": 5.972,
+            "cost_EUR": 0.521,
+            "mean_solve_ms": 59.7,
+            "solver_failures": 0,
+            "kappa_estimate_mid": 0.773,
+            "kappa_true": 0.75
+          }
+        },
+        "0.5": {
+          "nominal model": {
+            "label": "nominal-model MPC",
+            "finished": true,
+            "batch_time_h": 4.0393,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 375.63,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 4.0393,
+            "V_final_L": 10.0,
+            "diavolumes": 0.401,
+            "protein_recovery": 1.0,
+            "energy_kWh": 7.008,
+            "cost_EUR": 0.624,
+            "mean_solve_ms": 16.5,
+            "solver_failures": 0
+          },
+          "perfect model": {
+            "label": "perfect-model MPC",
+            "finished": true,
+            "batch_time_h": 4.0393,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 375.63,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 4.0393,
+            "V_final_L": 10.0,
+            "diavolumes": 0.401,
+            "protein_recovery": 1.0,
+            "energy_kWh": 7.008,
+            "cost_EUR": 0.624,
+            "mean_solve_ms": 17.0,
+            "solver_failures": 0
+          },
+          "back-off (\u2212200)": {
+            "label": "back-off MPC (\u2212200)",
+            "finished": true,
+            "batch_time_h": 4.0393,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 375.63,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 4.0393,
+            "V_final_L": 10.0,
+            "diavolumes": 0.401,
+            "protein_recovery": 1.0,
+            "energy_kWh": 7.008,
+            "cost_EUR": 0.624,
+            "mean_solve_ms": 16.9,
+            "solver_failures": 0
+          },
+          "multi-stage": {
+            "label": "multi-stage NMPC",
+            "finished": true,
+            "batch_time_h": 4.0393,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 375.63,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 4.0393,
+            "V_final_L": 10.0,
+            "diavolumes": 0.401,
+            "protein_recovery": 1.0,
+            "energy_kWh": 7.008,
+            "cost_EUR": 0.624,
+            "mean_solve_ms": 171.5,
+            "solver_failures": 0
+          },
+          "adaptive (MHE)": {
+            "label": "adaptive NMPC (MHE)",
+            "finished": true,
+            "batch_time_h": 4.0393,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 375.63,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 4.0393,
+            "V_final_L": 10.0,
+            "diavolumes": 0.401,
+            "protein_recovery": 1.0,
+            "energy_kWh": 7.008,
+            "cost_EUR": 0.624,
+            "mean_solve_ms": 63.3,
+            "solver_failures": 0,
+            "kappa_estimate_mid": 0.506,
+            "kappa_true": 0.5
+          }
+        },
+        "0.25": {
+          "nominal model": {
+            "label": "nominal-model MPC",
+            "finished": true,
+            "batch_time_h": 5.457,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 740.8,
+            "cL_violation": 170.7972,
+            "cP_overshoot": 0.0,
+            "spec_ok": false,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 5.457,
+            "V_final_L": 10.0,
+            "diavolumes": 0.689,
+            "protein_recovery": 1.0,
+            "energy_kWh": 11.261,
+            "cost_EUR": 1.113,
+            "mean_solve_ms": 17.2,
+            "solver_failures": 0
+          },
+          "perfect model": {
+            "label": "perfect-model MPC",
+            "finished": true,
+            "batch_time_h": 5.5869,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 570.0,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.6667,
+            "t_cL_spec_h": 5.5869,
+            "V_final_L": 10.0,
+            "diavolumes": 0.746,
+            "protein_recovery": 1.0,
+            "energy_kWh": 11.65,
+            "cost_EUR": 1.169,
+            "mean_solve_ms": 21.4,
+            "solver_failures": 0
+          },
+          "back-off (\u2212200)": {
+            "label": "back-off MPC (\u2212200)",
+            "finished": true,
+            "batch_time_h": 5.4976,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 764.54,
+            "cL_violation": 194.5375,
+            "cP_overshoot": 0.0,
+            "spec_ok": false,
+            "t_cP_spec_h": 2.1667,
+            "t_cL_spec_h": 5.4976,
+            "V_final_L": 10.0,
+            "diavolumes": 0.708,
+            "protein_recovery": 1.0,
+            "energy_kWh": 11.382,
+            "cost_EUR": 1.131,
+            "mean_solve_ms": 18.4,
+            "solver_failures": 0
+          },
+          "multi-stage": {
+            "label": "multi-stage NMPC",
+            "finished": true,
+            "batch_time_h": 5.5869,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 570.0,
+            "cL_violation": 0.0,
+            "cP_overshoot": 0.0,
+            "spec_ok": true,
+            "t_cP_spec_h": 2.6667,
+            "t_cL_spec_h": 5.5869,
+            "V_final_L": 10.0,
+            "diavolumes": 0.746,
+            "protein_recovery": 1.0,
+            "energy_kWh": 11.65,
+            "cost_EUR": 1.169,
+            "mean_solve_ms": 199.3,
+            "solver_failures": 0
+          },
+          "adaptive (MHE)": {
+            "label": "adaptive NMPC (MHE)",
+            "finished": true,
+            "batch_time_h": 5.581,
+            "cP_final": 100.0,
+            "cL_final": 15.001,
+            "cL_peak": 576.35,
+            "cL_violation": 6.3533,
+            "cP_overshoot": 0.0,
+            "spec_ok": false,
+            "t_cP_spec_h": 2.5,
+            "t_cL_spec_h": 5.581,
+            "V_final_L": 10.0,
+            "diavolumes": 0.744,
+            "protein_recovery": 1.0,
+            "energy_kWh": 11.633,
+            "cost_EUR": 1.166,
+            "mean_solve_ms": 65.8,
+            "solver_failures": 0,
+            "kappa_estimate_mid": 0.247,
+            "kappa_true": 0.25
+          }
+        }
+      },
+      "kappa_estimates": {
+        "true 0.75": 0.773,
+        "true 0.5": 0.506,
+        "true 0.25": 0.247
+      },
+      "mechanism": "r_L = alpha/[1+(alpha-1)exp(p/(kM_L*A))] decreases when kM_L decreases, so a plant with a smaller kM_L rejects *more* lactose and the retentate concentration rises much higher than predicted. The controller keeps concentrating because its own model reports a harmless cL, and the crystallisation limit is breached.",
+      "findings": [
+        "0.75x and 0.5x: the specification is still met and cL stays below 570 mol/m^3; the batch simply takes longer (3.69 h and 4.04 h).",
+        "0.25x: the nominal-model MPC drives cL to 741 mol/m^3, i.e. 30 % above the crystallisation limit - the constraint can no longer be satisfied with a wrong model.",
+        "Constraint back-off on cL_max is useless here: the *prediction* is biased, so the tightened bound is never active in the optimiser.",
+        "Multi-stage NMPC over kM_L in {0.25,0.5,0.75,1} keeps cL at the limit for every realisation and matches the perfect-model batch time, at ~4x the computational cost and no loss at the nominal plant.",
+        "Moving-horizon estimation identifies the factor within ~1 h of operation and recovers the perfect-model performance; it loses identifiability at the very end of the batch, when cL approaches the sensor noise floor."
+      ],
+      "wall_time_s": 32.4
+    },
+    "leakage": {
+      "title": "Structural plant-model mismatch: protein leakage",
+      "figures": [
+        "docs/figures/fig17_leakage.png",
+        "docs/figures/fig17_leakage.pdf",
+        "docs/figures/fig17b_leakage_threshold.png",
+        "docs/figures/fig17b_leakage_threshold.pdf",
+        "docs/figures/fig18_leakage_table.png",
+        "docs/figures/fig18_leakage_table.pdf"
+      ],
+      "reference": {
+        "label": "no leakage (reference)",
+        "finished": true,
+        "batch_time_h": 3.5447,
+        "cP_final": 100.0,
+        "cL_final": 15.001,
+        "cL_peak": 229.75,
+        "cL_violation": 0.0,
+        "cP_overshoot": 0.0,
+        "spec_ok": true,
+        "t_cP_spec_h": 2.1667,
+        "t_cL_spec_h": 3.5447,
+        "V_final_L": 10.0,
+        "diavolumes": 0.302,
+        "protein_recovery": 1.0,
+        "energy_kWh": 5.524,
+        "cost_EUR": 0.478,
+        "mean_solve_ms": 16.8,
+        "solver_failures": 0
+      },
+      "results": {
+        "kM_P=3e-07,aware=False": {
+          "label": "$k_{M,P}=3e-07$, nominal (2-state) MPC",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 10.0,
+          "diavolumes": 0.302,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 16.9,
+          "solver_failures": 0,
+          "protein_loss_%": 0.0
+        },
+        "kM_P=5e-07,aware=False": {
+          "label": "$k_{M,P}=5e-07$, nominal (2-state) MPC",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 99.997,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 9.998,
+          "diavolumes": 0.302,
+          "protein_recovery": 0.9998,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 17.9,
+          "solver_failures": 0,
+          "protein_loss_%": 0.0196
+        },
+        "kM_P=1e-06,aware=False": {
+          "label": "$k_{M,P}=1e-06$, nominal (2-state) MPC",
+          "finished": false,
+          "batch_time_h": 8.0,
+          "cP_final": 98.564,
+          "cL_final": 0.002,
+          "cL_peak": 229.77,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": false,
+          "t_cP_spec_h": NaN,
+          "t_cL_spec_h": 3.6667,
+          "V_final_L": 8.227,
+          "diavolumes": 1.187,
+          "protein_recovery": 0.81092,
+          "energy_kWh": 18.671,
+          "cost_EUR": 2.795,
+          "mean_solve_ms": 15.9,
+          "solver_failures": 0,
+          "protein_loss_%": 18.9083
+        },
+        "kM_P=1e-06,aware=True": {
+          "label": "$k_{M,P}=1e-06$, leakage-aware MPC",
+          "finished": false,
+          "batch_time_h": 8.0,
+          "cP_final": 99.194,
+          "cL_final": 0.002,
+          "cL_peak": 229.77,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": false,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.6667,
+          "V_final_L": 8.122,
+          "diavolumes": 1.18,
+          "protein_recovery": 0.80562,
+          "energy_kWh": 18.657,
+          "cost_EUR": 2.793,
+          "mean_solve_ms": 25.3,
+          "solver_failures": 0,
+          "protein_loss_%": 19.4376
+        }
+      },
+      "loss_rate_scan": [
+        {
+          "kM_P": 1e-07,
+          "loss_rate_%_per_h": 0.0
+        },
+        {
+          "kM_P": 2e-07,
+          "loss_rate_%_per_h": 0.0
+        },
+        {
+          "kM_P": 3e-07,
+          "loss_rate_%_per_h": 8e-06
+        },
+        {
+          "kM_P": 5e-07,
+          "loss_rate_%_per_h": 0.01293
+        },
+        {
+          "kM_P": 7e-07,
+          "loss_rate_%_per_h": 0.309059
+        },
+        {
+          "kM_P": 1e-06,
+          "loss_rate_%_per_h": 3.305316
+        },
+        {
+          "kM_P": 2e-06,
+          "loss_rate_%_per_h": 44.625533
+        },
+        {
+          "kM_P": 3e-06,
+          "loss_rate_%_per_h": 89.298309
+        }
+      ],
+      "negligible_below_kM_P": 2.778e-07,
+      "structural_finding": "With protein passage the constant-volume washing arc no longer keeps cP constant: for u = 1, dcP/dt = -(p cP/V) r_P < 0, i.e. the classic 'concentrate, then wash' structure actively destroys the protein specification. The reachable set shrinks, and above roughly kM_P = 1e-6 m/s the pair (cP = 100, cL <= 15) becomes unreachable inside 8 h even for a controller that knows Eq. (6) exactly.",
+      "discussion": "Because the model is written in hold-ups, Eq. (6) is a *third state* (dM_P/dt = -r_P c_P p) instead of a hand-patched attribute, so the leakage scenario is a plain ODE and the result no longer depends on the integrator. The passage ratio contains exp(p/(kM_P A)), which makes the effect an exponential cliff: for kM_P below 2.8e-07 m/s the loss is below 1e-3 %/h and the nominal two-state model is exact for all practical purposes (batch time 3.545 h, unchanged); at kM_P = 1e-6 m/s the loss reaches 3.3 %/h at the set point and roughly a fifth of the product is lost over the batch. Making the controller's model *aware* of the leakage improves the terminal protein concentration but cannot recover feasibility - the limitation is the plant, not the controller.",
+      "wall_time_s": 7.1
+    },
+    "montecarlo": {
+      "title": "Monte-Carlo robustness campaign",
+      "figures": [
+        "docs/figures/fig19_mc_batchtime.png",
+        "docs/figures/fig19_mc_batchtime.pdf",
+        "docs/figures/fig20_mc_peak.png",
+        "docs/figures/fig20_mc_peak.pdf",
+        "docs/figures/fig21_mc_table.png",
+        "docs/figures/fig21_mc_table.pdf"
+      ],
+      "n_draws_target": 24,
+      "horizon": 10,
+      "ranges": {
+        "kM_L": [
+          0.25,
+          1.1
+        ],
+        "k": [
+          0.8,
+          1.2
+        ],
+        "alpha": [
+          0.95,
+          1.15
+        ],
+        "cg": [
+          0.95,
+          1.05
+        ]
+      },
+      "campaigns": {
+        "nominal-model MPC": {
+          "label": "nominal-model MPC",
+          "n": 24,
+          "finished_%": 100.0,
+          "on_spec_%": 37.5,
+          "cL_constraint_ok_%": 75.0,
+          "median_T_h": 4.097,
+          "p90_T_h": 4.975,
+          "p90_cL_peak": 754.7,
+          "max_cL_violation": 423.13,
+          "mean_solve_ms": 18.5,
+          "horizon": 10
+        },
+        "multi-stage NMPC": {
+          "label": "multi-stage NMPC",
+          "n": 24,
+          "finished_%": 100.0,
+          "on_spec_%": 50.0,
+          "cL_constraint_ok_%": 87.5,
+          "median_T_h": 4.3,
+          "p90_T_h": 5.213,
+          "p90_cL_peak": 571.9,
+          "max_cL_violation": 165.68,
+          "mean_solve_ms": 123.2,
+          "horizon": 10
+        },
+        "adaptive NMPC (MHE)": {
+          "label": "adaptive NMPC (MHE)",
+          "n": 24,
+          "finished_%": 100.0,
+          "on_spec_%": 37.5,
+          "cL_constraint_ok_%": 75.0,
+          "median_T_h": 4.097,
+          "p90_T_h": 4.975,
+          "p90_cL_peak": 618.6,
+          "max_cL_violation": 163.83,
+          "mean_solve_ms": 63.4,
+          "horizon": 10
+        }
+      },
+      "sampling_diagnosis": {
+        "k x0.8": {
+          "batch_time_h": 4.3292,
+          "cP_final": 100.0,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        "k x1.0": {
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cP_overshoot": 0.0,
+          "on_spec": true
+        },
+        "k x1.2": {
+          "batch_time_h": 3.03,
+          "cP_final": 101.783,
+          "cP_overshoot": 1.783,
+          "on_spec": false
+        },
+        "k x1.2, dt = 2 min": {
+          "batch_time_h": 3.026,
+          "cP_final": 100.165,
+          "cP_overshoot": 0.165,
+          "on_spec": true
+        },
+        "k x1.2, dt = 30 s": {
+          "batch_time_h": 3.026,
+          "cP_final": 100.165,
+          "cP_overshoot": 0.165,
+          "on_spec": true
+        }
+      },
+      "note": "The controller keeps its nominal model in every draw. All draws finish inside 8 h, so the 'on spec' rate is limited by two constraint mechanisms: (i) a biased kM_L violates cL <= cL_max (see section 8), and (ii) a biased permeability makes the *equality* specification cP = cP_f overshoot, because the controller can only correct once per 10-minute sample. The 'sampling_diagnosis' entry isolates (ii): shortening the control interval removes the overshoot without changing anything else, which is the cheapest available fix for an equality end-point specification.",
+      "wall_time_s": 13.3
+    },
+    "economic": {
+      "title": "Economic MPC with a day-ahead tariff",
+      "figures": [
+        "docs/figures/fig03_tariff.png",
+        "docs/figures/fig03_tariff.pdf",
+        "docs/figures/fig22_economic_start_hour.png",
+        "docs/figures/fig22_economic_start_hour.pdf",
+        "docs/figures/fig23_economic.png",
+        "docs/figures/fig23_economic.pdf"
+      ],
+      "value_of_time_sweep": {
+        "c_t=0": {
+          "label": "economic MPC, $c_t=0$ \u20ac/h",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 10.0,
+          "diavolumes": 0.302,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 15.2,
+          "solver_failures": 0,
+          "value_of_time_EUR_per_h": 0.0,
+          "solvent_L": 30.202
+        },
+        "c_t=0.5": {
+          "label": "economic MPC, $c_t=0.5$ \u20ac/h",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 10.0,
+          "diavolumes": 0.302,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 13.9,
+          "solver_failures": 0,
+          "value_of_time_EUR_per_h": 0.5,
+          "solvent_L": 30.202
+        },
+        "c_t=2": {
+          "label": "economic MPC, $c_t=2$ \u20ac/h",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 10.0,
+          "diavolumes": 0.302,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 14.6,
+          "solver_failures": 0,
+          "value_of_time_EUR_per_h": 2.0,
+          "solvent_L": 30.202
+        },
+        "c_t=10": {
+          "label": "economic MPC, $c_t=10$ \u20ac/h",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 10.0,
+          "diavolumes": 0.302,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 17.8,
+          "solver_failures": 0,
+          "value_of_time_EUR_per_h": 10.0,
+          "solvent_L": 30.202
+        },
+        "c_t=30": {
+          "label": "economic MPC, $c_t=30$ \u20ac/h",
+          "finished": true,
+          "batch_time_h": 3.5447,
+          "cP_final": 100.0,
+          "cL_final": 15.001,
+          "cL_peak": 229.75,
+          "cL_violation": 0.0,
+          "cP_overshoot": 0.0,
+          "spec_ok": true,
+          "t_cP_spec_h": 2.1667,
+          "t_cL_spec_h": 3.5447,
+          "V_final_L": 10.0,
+          "diavolumes": 0.302,
+          "protein_recovery": 1.0,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.478,
+          "mean_solve_ms": 17.8,
+          "solver_failures": 0,
+          "value_of_time_EUR_per_h": 30.0,
+          "solvent_L": 30.202
+        }
+      },
+      "spread_over_value_of_time": {
+        "batch_time_h": 0.0,
+        "energy_kWh": 0.0
+      },
+      "start_hour_sweep": {
+        "0": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.4783
+        },
+        "1": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.5256
+        },
+        "2": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.6187
+        },
+        "3": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.8566
+        },
+        "4": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.1847
+        },
+        "5": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.4235
+        },
+        "6": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.58
+        },
+        "7": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.7091
+        },
+        "8": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.8529
+        },
+        "9": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.9697
+        },
+        "10": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.9198
+        },
+        "11": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.7553
+        },
+        "12": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.5553
+        },
+        "13": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.3672
+        },
+        "14": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.1975
+        },
+        "15": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 1.0616
+        },
+        "16": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.9453
+        },
+        "17": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.8322
+        },
+        "18": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.7218
+        },
+        "19": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.613
+        },
+        "20": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.5369
+        },
+        "21": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.5013
+        },
+        "22": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.4638
+        },
+        "23": {
+          "batch_time_h": 3.5447,
+          "energy_kWh": 5.524,
+          "cost_EUR": 0.4494
+        }
+      },
+      "cheapest_start_hour": 23,
+      "dearest_start_hour": 9,
+      "cost_ratio_worst_best": 4.38,
+      "analytic_optimum_T_h": 3.5435,
+      "finding": "Sweeping the value of time from 0 to 30 EUR/h changes the batch time by 0.0 s and the energy by 0.0000 kWh, i.e. not at all: with the pump model P = P_idle + P_dyn u, the electricity bill is P_idle T + P_dyn * integral(u dt), and *both* terms are minimised by the time-optimal bang-bang policy (the solvent integral is minimised by the same linear-programming argument as the batch time, see section 3). The time-optimal policy is therefore unconditionally the economic optimum. What does matter is *scheduling*: starting at 23:00 instead of 09:00 changes the electricity cost of one batch by a factor 4.4 (EUR 0.45 vs EUR 1.97) without touching the control policy at all.",
+      "wall_time_s": 22.3
+    },
+    "numerics": {
+      "title": "Numerical accuracy and real-time feasibility",
+      "figures": [
+        "docs/figures/fig24_timing_table.png",
+        "docs/figures/fig24_timing_table.pdf"
+      ],
+      "plant_substepping": {
+        "one_step_600s": {
+          "batch_time_h": 3.5442,
+          "cP_final": 100.333
+        },
+        "120_steps_5s": {
+          "batch_time_h": 3.5434,
+          "cP_final": 99.999
+        },
+        "analytic": 3.5435,
+        "error_of_coarse_grid_s": 2.8
+      },
+      "solver_timing": {
+        "5": {
+          "batch_time_h": 3.5447,
+          "mean_solve_ms": 15.5,
+          "max_solve_ms": 27.1,
+          "samples": 22
+        },
+        "10": {
+          "batch_time_h": 3.5447,
+          "mean_solve_ms": 13.6,
+          "max_solve_ms": 29.0,
+          "samples": 22
+        },
+        "20": {
+          "batch_time_h": 3.5447,
+          "mean_solve_ms": 13.3,
+          "max_solve_ms": 31.8,
+          "samples": 22
+        },
+        "50": {
+          "batch_time_h": 3.5447,
+          "mean_solve_ms": 25.2,
+          "max_solve_ms": 79.7,
+          "samples": 22
+        }
+      },
+      "multistage_timing": {
+        "mean_solve_ms": 139.8,
+        "max_solve_ms": 437.6
+      },
+      "real_time_margin": "the slowest controller needs 438 ms per sample, i.e. 0.07 % of the 600 s control interval",
+      "wall_time_s": 7.6
+    }
+  }
+}

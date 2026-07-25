@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dfp"
+version = "2.0.0"
+description = "Time-optimal control of a batch diafiltration process (APC SS25, TU Dortmund)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Academic use — TU Dortmund student project"}
+authors = [
+    {name = "Elmir Mirzayev"},
+    {name = "Rakesh Dharan"},
+    {name = "Kirupa Krishan"},
+]
+keywords = ["nonlinear MPC", "time-optimal control", "diafiltration", "CasADi",
+            "multi-stage NMPC", "moving horizon estimation"]
+dependencies = [
+    "numpy>=1.23",
+    "casadi>=3.6",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.32"]
+dev = ["pytest>=7.0", "scipy>=1.10"]
+
+[project.scripts]
+dfp = "dfp.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --disable-warnings"
+filterwarnings = ["ignore::DeprecationWarning"]

@@ -1,0 +1,14 @@
+# Streamlit theme matching the report's figure palette (dfp.viz.style).
+[theme]
+base = "light"
+primaryColor = "#79BD03"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F6F8"
+textColor = "#1B1C1E"
+font = "sans serif"
+
+[server]
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
